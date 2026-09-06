@@ -4,493 +4,87 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Grade 12 - Aphrodite | Debt Tracker V2</title>
-<style>
-  :root{
-    --navy:#1e3a5f;
-    --navy-dark:#132840;
-    --gold:#f2b705;
-    --gold-dark:#d19a00;
-    --cream:#f7f5ef;
-    --card:#ffffff;
-    --red:#d1453b;
-    --red-bg:#fdeceb;
-    --green:#2f8f5b;
-    --green-bg:#e8f7ee;
-    --ink:#22303f;
-    --muted:#6b7c8d;
-    --line:#e4e0d4;
-    --radius:14px;
-    --shadow:0 2px 10px rgba(30,58,95,0.08);
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--cream);
-    color:var(--ink);
-    padding-bottom:40px;
-  }
-  header.top{
-    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);
-    color:#fff;
-    padding:20px 16px 24px;
-    position:relative;
-    overflow:hidden;
-  }
-  header.top::after{
-    content:"";
-    position:absolute;
-    right:-40px; top:-40px;
-    width:160px;height:160px;
-    background:var(--gold);
-    opacity:0.15;
-    border-radius:50%;
-  }
-  header.top h1{
-    margin:0;
-    font-size:1.3rem;
-    letter-spacing:0.3px;
-  }
-  header.top .sub{
-    margin-top:4px;
-    font-size:0.85rem;
-    color:#d9e2ec;
-  }
-  .school-tag{
-    display:inline-block;
-    margin-top:10px;
-    background:rgba(242,183,5,0.18);
-    border:1px solid var(--gold);
-    color:var(--gold);
-    font-size:0.72rem;
-    font-weight:700;
-    letter-spacing:0.5px;
-    padding:4px 10px;
-    border-radius:20px;
-  }
 
-  .container{
-    max-width:900px;
-    margin:0 auto;
-    padding:0 12px;
-  }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap">
 
-  /* Dashboard */
-  .dash{
-    margin-top:-14px;
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    padding:0 4px;
-  }
-  .dash-card{
-    background:var(--card);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    padding:14px;
-    text-align:left;
-  }
-  .dash-card .num{
-    font-size:1.4rem;
-    font-weight:800;
-    line-height:1.1;
-  }
-  .dash-card .lbl{
-    font-size:0.72rem;
-    color:var(--muted);
-    margin-top:4px;
-    font-weight:600;
-    text-transform:uppercase;
-    letter-spacing:0.3px;
-  }
-  .dash-card.owed .num{color:var(--red);}
-  .dash-card.paid .num{color:var(--green);}
-
-  /* Section headings */
-  .section-title{
-    margin:22px 0 10px;
-    font-size:1.02rem;
-    font-weight:800;
-    color:var(--navy);
-    display:flex;
-    align-items:center;
-    gap:6px;
-  }
-
-  /* Action buttons row */
-  .actions-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:16px;
-  }
-  .btn{
-    border:none;
-    border-radius:12px;
-    padding:14px 12px;
-    font-size:0.95rem;
-    font-weight:700;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-    transition:transform 0.05s ease, opacity 0.15s ease;
-  }
-  .btn:active{transform:scale(0.97);}
-  .btn-primary{background:var(--navy);color:#fff;}
-  .btn-gold{background:var(--gold);color:var(--navy-dark);}
-  .btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
-  .btn-danger{background:var(--red-bg);color:var(--red);border:1.5px solid var(--red);}
-  .btn-sm{padding:8px 12px;font-size:0.82rem;border-radius:9px;}
-  .btn-full{width:100%;}
-  .btn:disabled{opacity:0.5;cursor:not-allowed;}
-
-  /* Search & filter */
-  .toolbar{
-    margin-top:18px;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
-  input[type="text"], input[type="number"], input[type="date"], select{
-    width:100%;
-    padding:12px 12px;
-    border-radius:10px;
-    border:1.5px solid var(--line);
-    font-size:0.95rem;
-    background:#fff;
-    color:var(--ink);
-    font-family:inherit;
-  }
-  input:focus, select:focus{
-    outline:none;
-    border-color:var(--navy);
-  }
-  .chip-row{
-    display:flex;
-    gap:6px;
-    overflow-x:auto;
-    padding-bottom:4px;
-    -webkit-overflow-scrolling:touch;
-  }
-  .chip{
-    flex:0 0 auto;
-    padding:8px 13px;
-    border-radius:20px;
-    background:#fff;
-    border:1.5px solid var(--line);
-    font-size:0.8rem;
-    font-weight:600;
-    color:var(--muted);
-    cursor:pointer;
-    white-space:nowrap;
-  }
-  .chip.active{
-    background:var(--navy);
-    border-color:var(--navy);
-    color:#fff;
-  }
-  .sort-row{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:0.82rem;
-    color:var(--muted);
-  }
-  .sort-row select{width:auto;flex:1;padding:9px 10px;font-size:0.85rem;}
-
-  /* Student list */
-  .student-list{
-    margin-top:14px;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
-  .student-card{
-    background:var(--card);
-    border-radius:12px;
-    box-shadow:var(--shadow);
-    padding:12px 14px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    cursor:pointer;
-    border-left:4px solid var(--line);
-  }
-  .student-card.unpaid{border-left-color:var(--red);}
-  .student-card.paid{border-left-color:var(--green);}
-  .student-info{flex:1;min-width:0;}
-  .student-name{
-    font-weight:700;
-    font-size:0.95rem;
-    color:var(--ink);
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .student-meta{
-    font-size:0.75rem;
-    color:var(--muted);
-    margin-top:2px;
-  }
-  .student-debt{
-    text-align:right;
-    flex:0 0 auto;
-  }
-  .student-debt .amt{
-    font-weight:800;
-    font-size:1.02rem;
-  }
-  .student-debt .amt.zero{color:var(--green);}
-  .student-debt .amt.due{color:var(--red);}
-  .status-badge{
-    display:inline-block;
-    font-size:0.65rem;
-    font-weight:800;
-    letter-spacing:0.4px;
-    padding:2px 8px;
-    border-radius:10px;
-    margin-top:3px;
-  }
-  .status-badge.paid{background:var(--green-bg);color:var(--green);}
-  .status-badge.unpaid{background:var(--red-bg);color:var(--red);}
-
-  .empty-state{
-    text-align:center;
-    padding:40px 20px;
-    color:var(--muted);
-    font-size:0.9rem;
-  }
-
-  /* Batch add */
-  .batch-toprow{
-    display:flex;
-    gap:10px;
-    margin-bottom:10px;
-  }
-  .batch-toprow .btn{flex:1;}
-  .batch-list{
-    max-height:340px;
-    overflow-y:auto;
-    border:1.5px solid var(--line);
-    border-radius:10px;
-    padding:4px;
-    margin-bottom:6px;
-  }
-  .batch-item{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:10px 8px;
-    border-bottom:1px solid var(--cream);
-    cursor:pointer;
-  }
-  .batch-item:last-child{border-bottom:none;}
-  .batch-item input[type="checkbox"]{
-    width:20px; height:20px;
-    accent-color: var(--navy);
-    flex:0 0 auto;
-  }
-  .batch-item .bname{font-size:0.9rem; font-weight:600;}
-  .batch-item.checked{background: var(--cream);}
-  .batch-count{
-    font-size:0.8rem;
-    color:var(--muted);
-    text-align:center;
-    margin-bottom:10px;
-  }
-
-  /* Modal */
-  .modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(19,40,64,0.55);
-    display:none;
-    align-items:flex-end;
-    justify-content:center;
-    z-index:1000;
-    padding:0;
-  }
-  .modal-overlay.open{display:flex;}
-  .modal{
-    background:#fff;
-    width:100%;
-    max-width:520px;
-    max-height:90vh;
-    overflow-y:auto;
-    border-radius:20px 20px 0 0;
-    padding:20px 18px 26px;
-    animation:slideUp 0.2s ease;
-  }
-  @media(min-width:600px){
-    .modal-overlay{align-items:center;}
-    .modal{border-radius:18px;margin:20px;}
-  }
-  @keyframes slideUp{
-    from{transform:translateY(30px);opacity:0;}
-    to{transform:translateY(0);opacity:1;}
-  }
-  .modal-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:14px;
-  }
-  .modal-header h2{
-    margin:0;
-    font-size:1.1rem;
-    color:var(--navy);
-  }
-  .modal-close{
-    background:var(--cream);
-    border:none;
-    width:32px;height:32px;
-    border-radius:50%;
-    font-size:1.1rem;
-    cursor:pointer;
-    color:var(--muted);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .form-group{margin-bottom:12px;}
-  .form-group label{
-    display:block;
-    font-size:0.8rem;
-    font-weight:700;
-    color:var(--navy);
-    margin-bottom:5px;
-  }
-  .form-hint{
-    font-size:0.75rem;
-    color:var(--muted);
-    margin-top:3px;
-  }
-
-  /* Detail modal */
-  .detail-header{
-    text-align:center;
-    padding-bottom:14px;
-    border-bottom:1px solid var(--line);
-    margin-bottom:14px;
-  }
-  .detail-header .name{
-    font-size:1.15rem;
-    font-weight:800;
-    color:var(--navy);
-  }
-  .detail-header .gender{
-    font-size:0.78rem;
-    color:var(--muted);
-    margin-top:2px;
-  }
-  .detail-stats{
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:8px;
-    margin:14px 0;
-  }
-  .detail-stat{
-    background:var(--cream);
-    border-radius:10px;
-    padding:10px 6px;
-    text-align:center;
-  }
-  .detail-stat .v{font-weight:800;font-size:0.95rem;}
-  .detail-stat .l{font-size:0.65rem;color:var(--muted);margin-top:2px;text-transform:uppercase;}
-  .big-remaining{
-    text-align:center;
-    padding:16px;
-    border-radius:14px;
-    margin:14px 0;
-  }
-  .big-remaining.due{background:var(--red-bg);}
-  .big-remaining.zero{background:var(--green-bg);}
-  .big-remaining .amt{
-    font-size:1.8rem;
-    font-weight:900;
-  }
-  .big-remaining.due .amt{color:var(--red);}
-  .big-remaining.zero .amt{color:var(--green);}
-  .big-remaining .lbl{
-    font-size:0.75rem;
-    font-weight:700;
-    color:var(--muted);
-    margin-top:2px;
-  }
-  .history-block h3{
-    font-size:0.85rem;
-    color:var(--navy);
-    margin:16px 0 8px;
-  }
-  .history-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:9px 10px;
-    background:var(--cream);
-    border-radius:8px;
-    margin-bottom:6px;
-    font-size:0.82rem;
-  }
-  .history-row .htype{font-weight:700;}
-  .history-row .hdate{color:var(--muted);font-size:0.72rem;}
-  .history-row .hamt{font-weight:800;}
-  .history-row .hamt.violation{color:var(--red);}
-  .history-row .hamt.payment{color:var(--green);}
-
-  .toast{
-    position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:var(--navy-dark);
-    color:#fff;
-    padding:11px 20px;
-    border-radius:24px;
-    font-size:0.85rem;
-    font-weight:600;
-    z-index:2000;
-    box-shadow:0 6px 20px rgba(0,0,0,0.25);
-    opacity:0;
-    pointer-events:none;
-    transition:opacity 0.25s ease, transform 0.25s ease;
-  }
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
-
-  .data-tools{
-    display:flex;
-    gap:8px;
-    margin-top:10px;
-    flex-wrap:wrap;
-  }
-  .data-tools .btn{flex:1;min-width:100px;}
-
-  footer{
-    text-align:center;
-    color:var(--muted);
-    font-size:0.72rem;
-    margin-top:30px;
-    padding:0 20px;
-  }
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkcxMiBBcGhyb2RpdGUgRGVidCBUcmFja2VyIiwgInNob3J0X25hbWUiOiAiRGVidCBUcmFja2VyIiwgInN0YXJ0X3VybCI6ICIuLyIsICJzY29wZSI6ICIuLyIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjdmNWVmIiwgInRoZW1lX2NvbG9yIjogIiMxZTNhNWYiLCAiaWNvbnMiOiBbeyJzcmMiOiAiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFNQUFBQURBQ0FJQUFBRGR2dnRRQUFBSW5rbEVRVlI0bk8zZFcyd1VWUnpIOGRudHR0dVd0bHdLcFVDNUNsVUtrUUtHVzRpQ1VZaEtKTWFFQnFJaEprSmlvc1FIQTc1VUl5UW1QbWlzRW4xUThVbU1FaFRESllZSUFsb3FSaUZBVVM1Q3VWT2dVQ2hsUzd2ZHJnL2JyR05ib0RQL2MvbWZNNzlQZUNuUTNiUC8rZmJNN0xZTG9SR3psam9BZm9WMUx3RE1ob0NBQkFFQkNRSUNFZ1FFSkFnSVNCQVFrQ0FnSUVGQVFJS0FnQVFCQVFrQ0FoSUVCQ1FJQ0VnUUVKQWdJQ0JCUUVDQ2dJQUVBUUVKQWdJU0JBUWtDQWhJSXJvWHdFVnQ1WHBQZjMvaW1pV1NWbUtXVUFEZkYrYTFsZDRMWUZWQkNVaGVOSGNUa0pnc0QwaDlOOTNaWFpLZEFYSG9wanNyUzdJcUlKN2RkR2RUU1pZRVpFbzZiblprWkh4QUpxYmpabnBHQmdka2VqcHU1bVprWkVBMnBlTm1Za2FHQldSck9tNW1aV1RTOThLQ1VJOWoyc00wWXdjeWE2YWlHTEVWR2JBREJiTWV4NUFIemowZ0k0WW9ELytIei9jVXhuOTJLckU5blRIZGdWQlBGMndId2pFZ3RzUFNpK2RZMkFYRWMweE1NQndPcjRBWURvZ2JiaVBpY2hITmJTNzhNYm1zWnJFRG9SNGZtQXhOZjBCTUJtRWlEcVBUSHhBWVRYTkFITDZHaktaOWdEb0QwdjdnN2FCM2pOb0NRajBDYVJ5bW5vQlFqM0M2UnFvaElOUWppWmJCNGxrWWtLZ09DTnVQVk9ySHF6UWcxS09BNGlHckN3ajFLS055MUxnR0FoSkZBV0g3VVV6WndGVUVoSHEwVUROMm5NS0FSSHBBMkg0MFVqQjhPLytWMW5lMlR0dDQ0QUd4dHhrSko3TWlpV2drVVpEVE5paXZaVkJleThqQ1c2VkZOeDRjM0RpOGY3UFkrektJM0lCMGJUK0paS2dqR1JKN20yMkpVRnNpM055YWVlMTJkbDFEZ2Z1UGlndGlNMGJYUC9IUXVkbGpMMFhDSFdMdmw2aTJjcjNVSDM2MWN3ZFNyTDRwZDlQQk1ac09qdW1mMi9wYytjbWxNNDRXOXJtamUxR0tTTHdHQ3VEVlQyTXN1bTV2MmJ5UEZyNy8wK1NXT0pjdlRxa0hBcy9DeEd0dHovaXladnpDVDUvNXJhNVk5MXFra3hWUUFMZWZMaTdlN0xQOHE3bnI5cGJwWG9qanlEd2MySUVrNmtpR1B0aFIvdUhPY3QwTGtVaEtRTmgrM0Q2dkx2dXNlb0x1VmNnNktOaUJWS2phT1duWDhXRzZWeUVGQWxMazdTM1RHMk5SM2FzUVQzeEFPSC8xNk5ydDdQZTJUOVc3QmhtSEJqdVFPdHRxUjU2K2xxOTdGWUloSUhVNmtxRXZlRHlyRjBqd3E2WG1ucisyci9naEt5UFI0eCsxZDRSdnRrU3Z4NktITHhUK2Zucnd2cnJpcE45NzJYSjQ5S3A1Ky9PaWNkL3JKQkwrclRFdUw3ZHJWOWpuVGpUU2MwQ080eFFYeEJ6SG1UbTZmdm5zSTZjYUNxcDJsdTg0VnVMalh1S0pjUFhKSWZQTHp2cGZLRE00aFhrMlptQlQxYUk5Yjg3LzA5KzMrM2Y2S284dGtmOUNtY2J6VitYbUdYK2NLVXAvMkJpTE5yZG1lcnFGa3Y3TlhvT29iOHFOSnp4L0JXWm1kS1QyczdUU29odFZpL1o0dlIwS2dXY3hTMDVoVjI3bG5Hdk1vOXpDZWRxbjkxNDhFZTZ5MVB6c05qVjNMUU5PWVVDQ2dJQkVXRUI2bjhCblpuUmt1WDZGUTU2ZmFHZjkveFo2Lzh2SHBYUTRsT3h5STk1dmcwVGd3YkxrR21odHhXNzNoMjl0bWY2ZHh4K3FyMW01NFI1UDQrL2hsYS9uL1BMUFVFK2ZzbXoya2RmbUhQSnhYd3poRkViVk44ZnpKYkNQNTI1czJmTklkUEZSUTFqd0cwWjBzdVFVOXRlbEFkZGRQeXh4dVNuWDZ5M1VuQ3FPK0xvVzhmSHl3YVdidWIrZUhKTCtNRDhhbjFUUzRPT3VPYkFrb0txZkoxVzdEb2tQcjM3em1LakYzTmZXMmxGYmEwZWxQeXdiY3YzYmwzOVVkdTlpNFJRR0pHSUNNdmViOElFbDZwQmhCd0lTUzY2QjVvMC9PMjdRamZTSDFhZUduTGpTejlNdHZEajlhSWFYbHg4VHlkQ0cvV1B2ZUgvN2FWRit5OU1UVHJ0L3A3aHY3QzUvMXdDV0JQVDg1SlB1RDV1MlpIa042UFhIRC9iK2hjVEdXSFRWOTdOODFPTTR6bE1UenJ6eDVBRWZuOGlUSlFFcEUydUxiRHd3ZHQzZThWZWJjL3pkd3R6UzgyS1hwQmNDNnJTdGRtVG1YVjRIYXU4STMyekp1bjQ3KzlDRndrTVhCcmEyWi9pK2w4SStkNmFNdU9yNzB4bENRSjBxTjg5UWNDOHZURC9tNHh1OW5PRlptRHA1MGZqaVI0N3JYb1ZnQ0VpZFpiT1BhSHcvaGlRSVNKRkpKUTB2emZ4Yjl5ckVRMEFxNUVYajd5NnNzZXpxSndVQlNaZWQyZjdKNGwwakI5elN2UkFwRUpCYzBVamk0NG85VTRaYjlkVGREVS9qSlJyYTkzYlZvajNqaXh0MUwwUWlCQ1RMc3cvWHJaeTN2MTlPcSs2RnlJV0F4Q3N2YVZneDkrQzBVWmQxTDBRRk1RRk5YTE1FUHhJVWpTVG1sRjZvbUhyQ2lIUkV2YnNaT3hEVnNIN04wMFpkbVRuNjBxUGpMdHIzT3VGOUlhQk9NOGZVMy90MW1veHdNaXNqRVkwazhyUGpnL0phaXZKanFmOXNKWURSdUNHZ1Rtc3JkdnQ3WTJIQTRYVWdJRUZBUUlLQWdFUllRRkwvVnpNUVMrREJ3ZzRFSkFnSVNCQVFrSWdNQ0pkQlJoQjdtTEFEQVFrQ0FoTEJBZUVzeHB6d0E0UWRDRWdRRUpDSUR3aG5NYlprSEJyc1FFQ0NnSUJFU2tBNGl6RWs2YUJnQndJU1dRRmhFMkpGM3VIQURnUWtFZ1BDSnNTRTFBT0JIUWhJNUFhRVRVZzcyWWZBenZlRnJWNndiL1dDZmJwWEVRalNUMkhZaERSU01IeGNBd0dKaW9Dd0NXbWhadXlLZGlBMHBKaXlnZU1VQmlUcUFzSW1wSXpLVVN2ZGdkQ1FBb3FIclBvVWhvYWtVajllWEFNQmlZYUFzQWxKb21Xd2VuWWdOQ1NjcnBGcU80V2hJWUUwRGxQbk5SQWFFa0x2R0RWZlJLTWhJdTBEeExNd0lORWZrUGF2SVhOeEdKMytnQndlZ3pBT2s2R0ZSc3hhcW5zTi84SC8yTkliVE5KSlliRURwYkVhRFUvY1JzUXJJSWZmZ0ZoaE9CeDJBVGtzeDhRQno3RndETWpoT2l5TjJBNkUxMFYwZDdpc1pwdE9DdE1kS0kzNStHVGovL0M1QitTWU1FUkpqSGpnM0U5aGJzRTVuUm1SVG9vQk8xQ2FRV09sTU90aG1yUURwZG02RlptVlRvcVJBYVhZbEpHSjZhUVlIRkNLNlJtWm0wNks4UUdsbUppUjZlbWtXQkpRaWlrWjJaRk9pbFVCcGZFc3lhWnUwdXdNS0kxRFNWWjJrMlo1UUducVM3SzdtN1NnQk9RbUw2YUFST01XeElCNjVMV3FBTGJTSXdRRUpDWjlMd3dZUWtCQWdvQ0FCQUVCQ1FJQ0VnUUVKQWdJU0JBUWtDQWdJRUZBUUlLQWdBUUJBUWtDQWhJRUJDUUlDRWdRRUpBZ0lDQkJRRUNDZ0lBRUFRRUpBZ0lTQkFRay93Sm04bnhPRThISFBBQUFBQUJKUlU1RXJrSmdnZz09IiwgInNpemVzIjogIjE5MngxOTIiLCAidHlwZSI6ICJpbWFnZS9wbmcifSwgeyJzcmMiOiAiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFnQUFBQUlBQ0FJQUFBQjdHa090QUFBV1IwbEVRVlI0bk8zZGU1RGRaWG5BOGJPWGJEYVhEWW13Q1NFU0NDRWdKSU10RndrUjZ3VUV4TnVVT2xNYnhkREJ6clNkT20zVmpsaUwweWxUeDJtZHpyUTZyVnJVNm1DY1R2RVNaYVMwVXAweFNCVk1CSU1FQzRRRVF4SUlKSUdFelNiWmJQOGdRekJzZHM4NWU4NTVmKy83ZkQ1L29iUEdkL1I5bnUvNW5iUFo3VnE0WWxVTmdIaTZVeDhBZ0RRRUFDQW9BUUFJU2dBQWdoSUFnS0FFQUNBb0FRQUlTZ0FBZ2hJQWdLQUVBQ0FvQVFBSVNnQUFnaElBZ0tBRUFDQW9BUUFJU2dBQWdoSUFnS0FFQUNBb0FRQUlTZ0FBZ2hJQWdLQUVBQ0FvQVFBSVNnQUFnaElBZ0tBRUFDQW9BUUFJU2dBQWdoSUFnS0FFQUNBb0FRQUlTZ0FBZ2hJQWdLQUVBQ0FvQVFBSVNnQUFnaElBZ0tBRUFDQW9BUUFJU2dBQWdoSUFnS0FFQUNBb0FRQUlTZ0FBZ2hJQWdLQUVBQ0FvQVFBSVNnQUFnaElBZ0tBRUFDQW9BUUFJU2dBQWdoSUFnS0FFQUNBb0FRQUlTZ0FBZ2hJQWdLQUVBQ0FvQVFBSVNnQUFndXBOZlFCb3ZRMDNybTc1bjduc3BwVXQvek1ocmE2RksxYWxQZ00wckIwcmZqTGtnUndKQUZWWHRWMWZQMVdnNGdTQWFzbDMzZGRERXFnVUFTQ3hzamYrK1BTQXRBU0FCQ0l2L2VNUkF6cFBBT2dRUzc5K1lrQm5DQUR0WmU5UGhoTFFWZ0pBNjFuNjdTQUd0SndBMERMMmZtY29BYTBpQUV5V3ZaK0tFakJKQWtDVDdQM3FVQUthSXdBMHh0NnZNaVdnSVFKQXZheitYTWdBZFJJQUptRHY1MHNKR0o4QWNGeFdmeGxrZ09NUkFNWmc5WmRIQm5nNUFlQW9lejhDSmVCRkFrQ3RadlhISXdQVUJBQ3JQeklaQ0U0QTRyTDZlWUVNaENVQUVWbjl2SndNQkNRQXNWajlqRThHUWhHQUtLeCs2aWNEUVhTblBnQ2RZUHZURUJjbUNFOEFoVFBKVElaSGdiSUpRTEdzZmxwRkJrb2xBQVd5K21rSEdTaVB6d0JLWS92VEpxNVdlVHdCbE1OODBoa2VCWW9oQUNXdyt1azhHU2lBdDRDeVovdVRoSXRYQUU4QUdUT0JWSUZIZ1h4NUFzaVY3VTlGdUlyNThnU1FIL05HTlhrVXlJNG5nTXpZL2xTV3k1a2RBY2lKQWFQaVhORzhlQXNvRCthS3ZIZzdLQXVlQURKZys1TWRsellMQWxCMUJvbE11YnJWNXkyZzZqSS9sTUhiUVpYbENhQ2liSCtLNFRKWGxnQlVrWUdoTUs1ME5Ya0xxRnJNQ1dYemRsQ2xlQUtvRU51ZjRybmtsU0lBVldFd0NNSlZydzRCcUFRalFTZ3VmRVVJUUhxR2dZQmMreXJ3SVhCS1pnQjhMSnlRSjRCa2JIK29HWVNrQkNBTmx4NWVaQnhTRVlBRVhIYzRocUZJUWdBNnpVV0hNUm1OemhPQWpuTEZZUndHcE1NRW9ITmNicGlRTWVra0FlZ1ExeHJxWkZnNlJnQTZ3WVdHaGhpWnpoQ0F0bk9Wb1FrR3B3TUVvTDFjWW1pYThXazNBV2dqMXhjbXlSQzFsUUMwaTRzTExXR1Uya2NBMnNLVmhSWXlVRzBpQUszbnNrTExHYXQyRUlBV2MwMmhUUXhYeXdsQUs3bWcwRlpHckxVRW9HVmNUZWdBZzlaQ0F0QWFMaVYwakhGckZRRUFDRW9BV3NEckVlZ3dROWNTQWpCWkxpSWtZZlFtVHdBbXhSV0VoQXpnSkFsQTgxdytTTTRZVG9ZQU5NbTFnNG93akUwVEFJQ2dCS0FaWG5GQXBSako1Z2hBdzF3MXFDQ0QyUVFCYUl4TEJwVmxQQnNsQUFCQkNVQUR2TDZBaWpPa0RSR0FlcmxZa0FXaldqOEJxSXNyQlJreHNIVVNBSUNnQkdCaVhrMUFkb3h0UFFSZ0FxNFJaTXJ3VGtnQXh1TUNRZGFNOFBnRUFDQW9BVGd1cngyZ0FBWjVIQUl3TnBjR2ltR2NqMGNBQUlJU2dERjR2UUNGTWRSakVvQmp1U2hRSktQOWNnSUFFSlFBL0JxdkVhQmdCdndZQWdBUWxBQWM1ZFVCRk0rWXY1UUFIT0ZhUUJDRy9VVUNBQkNVQU5ScVhoRkFNRWIrQlFJQUVKUUFlQzBBRVJuOG1nQUFoTlcxY01XcTFHZEl5YXVBNW54OS9lSjFqdyttUGtXNzlIU1A5dlVjbnRvNzB0YzdNclYzNU1nLzlCd2U2RDl3MHN6OWd6T0hCZ2VHcGswNWxQcVl0TUN5bTFhbVBrSkt2YWtQa0pMdDM3UjFqdyt1dWUrTTFLZElhZWJVZ3lmTkhCcWNPVFIzWUdqeDRKNGxjL2NzR2R5OVlNN2VydFFIb3lFYmJsd2R1UUdoQXdCTjJ6czhaZS93bE1lZW52WFNmM042MzZFekIvY3NtYnY3ckhtN0xscjQ1Sko1dS9XQUtvc2JBQy8vYWJubkQvVGV2L1hFKzdlZStNSy9mTVdNL1JlZnZtUDVvdTNMRisxWU1IdHYyck54UEpFZkF1SUdBTnJ0bVgzOXR6OXcydTBQbkZhcjFWNDVaKy9yejN6aTdlZHRXbmJLMDZuUEJVY0UvUzRnTC8vcHNGL3Rtdm5WZTg1Njl4ZXVmUHUvdk8xZjF5N2R0bWRHNmhOeFZOaUY0QWtBT21yVHpsbi8rUDFYLzlQM1gzM2hhVHZlZGY0amIxbTZ1YnRyTlBXaENDcmlFMERZMmxNZG83WGFQWnZuZmVTYks5NzJ6Mi83eHZyRmh3NUhuTVJLaWJrV1hEdElhY3N6QXgrLzdlS3JQdjJPMWZlY05YeW9KL1Z4aUNWY0FHSjJub3JiL3V6MFQvem5oVmQrK3AzZnVYOVI2clBFRlhBNWhBc0FWTmJPdmYwZlhYUEorMjk1MCtabkJsS2ZoUkJpQlNCZzRjbk8vMjQ2K1pyUFhmM1pIeTQ3T0JKclBLc2cyb3B3dzZCeWhnLzFmT1lINTEzeithczNicCtUK2l5VUxGQUFvcldkM0czYU9lczlYN3JpdHArZm52b2dzWVJhRklFQ0FOa1pQdFJ6dzdkV2ZQS09DMFlPKzZsQ3RKNEFRTlhkOHBPenI3L2xzbWYyOWFjK0NLV0pFb0JRajNXVTU5N05jMy92aTFkdTNUMHo5VUZDaUxNdW9nUUFjcmQxOTR4Vlg3NThpKzhRcFhWQ0JDQk96eW5iOW1lblgvZVZ5NC81SlFTMFE1Q2xFU0lBVUl3bm41djJCMTk5NDFON3A2VStDQ1VvUHdCQlNrNGMyL2JNK09PdnZlSDVBMzZVYjN0RldCM2xCd0RLOCtEMk9SKzg5WFdIUjMxdktKTWlBSkNsdFkvTS84d1B6a3Q5Q3ZKV2VBQWlQTVFSMXMxM25YdjNwcE5UbjZKa3hTK1F3Z01BQlRzODJuWEROMWZzM09zdmlOR2trZ05RZkwzaDZYMzlOOTErVWVwVGxLenNOVkp5QUNDQ096ZWUrdjFmdmpMMUtjaVNBRUQyL3ZiMkMzMVhLRTBvTmdCbFA3akJTMjEvZHZybmZyZ3M5U21LVmZBeUtUWUFFTXBYN3puTHA4RTBTZ0NnQlBzUDlub0lvRkZsQnFEZ1J6WTRubHZYbi9uRW5obXBUMUdtVWxkS21RR0FnQTZPZE4veTQ3TlRuNEtjQ0FDVTR4cy9XengwMExjRFVhOENBMURxd3hwTWFPL3dsRFgzTFVwOWlqSVZ1Vmk4V0NCWFo4L2JkY09WNjFyeVI0Mk8xdllmNmhrKzJMUC9ZTytUZTZjOStlejBiYzlPZjJqSG5LMjc4M3RML1d2M252WHVDLzh2OVNuSWd3Q1FxNEgrZ3hlZHRxT3QveFhQN2UrN2IrdUpheDgrWmUwanB6ejJkQjYvaS9HUnAwNTRhTWVjcytmdFNuMFFNbEJhQUlwOFRDT1ZnZjREbHk3ZWR1bmliYlhhVHpjOGNlS3Q2eGQvZDhQcDFmODd0N2MvY0pvQXRNT0dHMWN2dTJsbDZsTzBVb0dmQVVBN0xEdmw2YjkrNjAvdStNQ2FWY3MzVHUwZFNYMmM4ZHord0dtcGowQWVCQUFhTUdmNjhGKzhlZDIzLytpMjE1emUzbmVmSm1QcjdobS8yUGFLMUtjZ0F3SUFEVnN3ZTk4WHJyM3pJMWVzNis0YVRYMldzZDMxNlB6VVJ5QURSUVhBQndCMFRGZXRkdTNGR3orNzhnY3pweDVNZlpZeDNQMm8zeFRXRm9VdG1hSUNBQjIyNG94dG4zL1AvMHliY2lqMVFZNjEvdkhCL2Y1R0dCTnhSVGhxMDg1Wk4vL28zSHErY3QyV3VlMCt6SVEyN1p6MXNXOHZUMzJLV3ExV1d6QjczOE5QblpENkZML200RWozaDc3KzJ0blRoK3YvajN6NDh2VnpHdmw2Q3RDMWNNV3ExR2RvamNJZXpaSzRaL084My8vS1phbFBRUnAzZkdETmd0bjdVcDhpRDhWOE02aTNnQUNDRWdDQW9BUUFJS2hDQXVBREFLQmppbGs0aFFRQWdFWUpBRUJRQWdBUVZBa0JLT2I5T0NBWFpheWRFZ0lBUUJNRUFDQW9BUUFJeWcrRDQ2aFh6ZHYxcGZmZFdjOVgzbnpYdVhjOWt2Z256cmZ3bDhLMzNCK3Vmc1B3b1o3VXA2alZhclV2WG50blYxZGRYM25TelAxdFBndVZrMzBBeXZnb3BpSUcrZy9VK1d2V3YzWGZvbllmWmtJZCtLWHdUWnMzNi9rdHoxVGlsOGoveHFsUDlmVWNUbjJLTWhYd0s0SzlCUVN0ZC9LczUxTWY0WWdEMVhnUW9ab0VBRnB2Umw5VmZrM1l3UkV6em5HNUhOQjYvVk5HVWgvaENBRmdIQzRIdEY1UGQxVitXZnpoMGZvK0FpWWtBWURXcThpM0FOVnF0U2srQWViNDhnNkFid0dpbW9ZUENrQUl1YStndkFNQTFiUnpYMy9xSXh6aGUwQVpod0JBNjIzYk15UDFFWTZZMGxPVmo2T3BvT3ovSWhndHRISDduRS8rMXdYMWZPV21uYlBhZlpnSmJkdys1N3F2WEo3NkZHUGI5ZnpVMUVjNDR2cGJMcXZ6S3o5MXpWcC9HVGdhQWVDbzU0Yjc3dDA4Ti9VcDZyVjNlRXBHcDAybC92K0pxdlBCTlIzakxTQ0FvQVFBSUtpTUE1RDdOMkFCQmNoNkVXVWNBQUFtUXdBQWdoSUFnS0FFQUNBb0FRQUlTZ0FBZ2hJQWdLQUVBQ0FvUHd1SW84NWJzUE9PRDZ5cDV5cy85YjN6Ly92QlU5dDludkdkdCtEcHY3OW1iZG96MUdxMVdxM3JwdTlldFBhUithbVBjYXd2ci9yZXliUDIxZi8xMWZsRjluUk1yZ0hJK20vZlZkYlUzcEVGcyt0YUdkTXI4RXZQKytvK2JmdU1ITzc2K0cwWFYzRDd6ejloM3dVTG4weDlpaWcyM0xoNjJVMHJVNStpR2JrR0FKTGJPenpsejI5OTNkMlBucHo2SUdOWXZtaDc2aU9RQVFHQVp0eS85Y1MvWExQaXNhY0hVaDlrYkN2T0VBQW1KZ0RRbUwzRFV6Ni9kdW0vM1gzTzRkR3UxR2NaVzAvMzZDVUNRQjBFQU9xMWQzaktmNnc3OCthN2x1NFo2a3Q5bHZGY3Ntajc3R25EcVU5QkJnUUFKbkRvY1BlNkxZUGYrZm1pMng5WXVQOWdCaVB6bHFXYlV4K0JQR1J3bTZIejlnejFQYlJqem9QYjU5ejNxNU4rOU9qOHZjTlRVcCtvWG4wOWh5OTcxZU9wVDBFZUJJQmNiZG81NjJQZlh0NlNQMnAwdEd2NFVNL3dvWjc5QjN1ZWZHNzY5bWVuUDM4ZzE5RzQvSnpIWjA1Ti8wMjZaQ0hYV3c1UDcrdGZjOThacVU5Uk9lKzU2S0hVUnlBYmZoUUVsR1BwL0dkZS9jcWRxVTlCTmdRQXl2SGUxM2o1VHdNRUFBcXg4QlhQWGIzc3NkU25JQ2NDQUlYNGs5ZmYzOU05bXZvVTVFUUFvQVJMNXU2K2F1bVcxS2NnTXdJQUpmalE1ZXU3dTd6OHB6RUNBTm03YXVubVN4ZHZTMzBLOGlNQWtMZUIvZ00zWFBIVDFLY2dTd0lBZWZ2dzVldFBtcmsvOVNuSWtnQkF4cTQ0Wjh2di9PWWpxVTlCcmdRQWNyVmc5dDYvZWZ1UFU1K0NqQWtBWkttdjUvQS92R3V0bi92R1pBZ0E1S2VyVnZ2RU8rOWVPditaMUFjaGJ3SUErZm5RbTlkZjViZStNR2tDQUpsNTcyc2V1bTc1ZzZsUFFRbjhQZ0RJeWJVWGIveklGZXRTbjRKQ0NBQms0LzJ2L2NXZnZlbG5xVTlCT1FRQU10RGROZnFuYjdyditoVy9TSDBRaWlJQVVIVUQvUWYrN3JkLzlMb3puMGg5RUVxVDY0ZkF5MjVhbWZvSTBBbG5EdTc1OSt2dnNQMnJMTjkxNUFrQXF1dnlWejMraVhmZVBiM3ZVT3FEVUNZQmdDb2E2RC93d2N0KzlxN3pIKzVLZlJJS0pnQlFPVmVldStXalY5N3JaM3pTYmdJQUZYTEtDZnYrNnVwN2ZzczcvblNFQUVBbHpPby9jTzNGRzYrN1pPTzBLZDd4cDBNRUFCS2JNMzM0ZmNzM3Jyem9selA2L0doUE9rb0FJSm5CbVVQWFhmTGc3MTd3Y0w5WC9hUWdBTkJwUGQyamx5NSs0aDNuYlhyajJiL3E2em1jK2pqRUpRRFFPZWZPZitZZDUyMTY2N0xINWt3ZlRuMFd5RGtBeTI1YXVlSEcxYWxQQVJPWTJqdHkvcWxQTFQ5ait4dVdiRjA4dUNmMWNXaXhmUDhhY0MzckFFQmxkWGVObm5QeXJrdk8yTDU4MGZiekZ6N3BmUjZxU1FDZ0JXWlBHejV6N3A2ejV1NCthKzd1SmZOMkx4bmM3ZWMzVUgwQ0FQV2EyanR5MHN5aHVRTkRnek9IQmdlR0JtY096UjBZbWpzd2RNWkplK1lPREtVK0hUUk1BTWpWMmZOMjNYQmxXMzQzVm5mWGFGL3Z5TlNla2I3ZWthbTloNmYydnZBUEkxTzhrME5aQklCY0RmUWZ2T2kwSGFsUEFSbkw5ZmNCQURCSmVRY2c2Mi9BQW5LWCt3cktPd0FBTkUwQUFJSVNBSUNnQkFBZ0tBRUFDQ3I3QU9UK0tUeVFxUUtXVC9ZQkFLQTVBZ0FRbEFBQUJDVUFBRUdWRUlBQ1Bvb0I4bExHMmlraEFBQTBRUUFBZ2hJQWdLQUtDVUFaNzhjQldTaG00UlFTQUFBYUpRQUFRUWtBUUZEbEJLQ1lkK1dBS2l0cDFaUVRBQUFhSWdBQVFSVVZnSkllellBS0ttekpGQlVBQU9vbkFBQkJDUUJBVUtVRm9MQjM2SURxS0crOWxCWUFBT29rQUFCQkZSaUE4aDdUZ09TS1hDd0ZCZ0NBZWdnQVFGQmxCcURJaHpVZ2xWSlhTcGtCQUdCQ0FnQVFWTEVCS1BXUkRlaXdncGRKc1FFQVlId0NBQkJVeVFFbytNRU42SXl5MTBqSkFRQmdISVVIb094NkEyMVYvQUlwUEFBQUhJOEFBQVJWZmdDS2Y0Z0QyaUhDNmlnL0FBQ01LVVFBSXBRY2FLRWdTeU5FQUFCNHVTZ0JDTkp6WVBMaXJJc29BUURnR0FJQUVGU2dBTVI1ckFPYUZtcFJCQW9BQUM4Vkt3Q2gyZzQwS3RxS2lCVUFBRjRVTGdEUkNnL1VLZUJ5Q0JjQUFGNFFNUUFCT3crTUwrWmFpQmdBQUdwaEF4Q3o5c0NZd2k2RW9BRUFJRzRBd2pZZmVLbklxeUJ1QUFDQzYxcTRZbFhxTTZTMDRjYlZxWThBSkJQNTVYL05FMER3Ly9zaE11TWZQUUFBWVFtQVZ3RVFrY0d2Q1FCQVdBSlFxM2t0QU1FWStSY0lBRUJRQW5DRVZ3UVFoR0Yva1FBYzVWcEE4WXo1U3drQVFGQUM4R3U4T29DQ0dmQmpDQUJBVUFKd0xLOFJvRWhHKytVRVlBd3VDaFRHVUk5SkFBQ0NFb0N4ZWIwQXhURE94eU1BeCtYU1FBRU04amdFQUNBb0FSaVAxdzZRTlNNOFBnR1lnQXNFbVRLOEV4S0FpYmxHa0Ixald3OEJBQWhLQU9yaTFRUmt4TURXU1FEcTVVcEJGb3hxL1FTZ0FTNFdWSndoYllnQUFBUWxBSTN4K2dJcXkzZzJTZ0FhNXBKQkJSbk1KZ2hBTTF3MXFCUWoyUndCQUFoS0FKcmtGUWRVaEdGc21nQTB6N1dENUl6aFpBakFwTGg4a0pBQm5DUUJtQ3hYRUpJd2VwTW5BQzNnSWtLSEdicVdFQUNBb0FTZ05id2VnWTR4YnEwaUFDM2pVa0lIR0xRV0VvQldjaldocll4WWF3bEFpN21nMENhR3ErVUVvUFZjVTJnNVk5VU9BdEFXTGl1MGtJRnFFd0ZvRjFjV1dzSW90WThBdEpHTEM1TmtpTnBLQU5yTDlZV21HWjkyRTRDMmM0bWhDUWFuQXdTZ0UxeGxhSWlSNlF3QjZCQVhHdXBrV0RwR0FEckh0WVlKR1pOT0VvQ09jcmxoSEFha3d3U2cwMXh4R0pQUjZEd0JTTUJGaDJNWWlpUUVJQTNYSFY1a0hGSVJnR1JjZXFnWmhLUzZGcTVZbGZvTTBXMjRjWFhxSTBBQ1ZuOXluZ0RTTXdZRTVOcFhnUUJVZ21FZ0ZCZStJZ1NnS293RVFianExU0VBRldJd0tKNUxYaWsrQks0aUh3dFRIcXUvZ2p3QlZKRlJvVEN1ZERVSlFFVVpHSXJoTWxlV3Q0Q3F6dHRCNU12cXJ6aFBBRlZuaE1pVXExdDlBcEFCZzBSMlhOb3NlQXNvSjk0T292cXMvb3g0QXNpSjBhTGlYTkc4Q0VCbURCaVY1WEpteDF0QXVmSjJFTlZoOVdmS0UwQ3VqQndWNFNybXl4TkE5andLa0lyVm56dFBBTmt6aENUaDRoWEFFMEE1UEFyUUdWWi9NUVNnTkRKQSsxajloZkVXVUdtTUtHM2lhcFhIRTBDeFBBclFLbFovcVFTZ2NETEFaRmo5WlJPQUVHU0FSbG45RWZnTUlBVERURU5jbUNBOEFjVGlVWUR4V2YyaENFQkVNc0RMV2YwQkNVQmNNc0FMclA2d0JDQTZHWWpNNmc5T0FLalZaQ0FlcTUrYUFQQlNNaENCMWMrTEJJQXhLRUY1N0gxZVRnQTRMaGtvZzlYUDhRZ0FFNUNCZkZuOWpFOEFxSmNTNU1MZXAwNENRR05rb01xc2Zob2lBRFJKQ2FyRDNxYzVBc0JrS1VFcTlqNlRKQUMwakJKMGhyMVBxd2dBcmFjRTdXRHYwM0lDUUh1SndXUlkrclNWQU5BaFNsQS9lNS9PRUFBU0VJT1hzL1RwUEFFZ3NjZ3hzUFJKU3dDb2xySjdZT05US1FKQTFlV2JCT3VlaWhNQXNsUzFLdGoxNUVnQUtGQTc4bURGVXg0QkFBaXFPL1VCQUVoREFBQ0NFZ0NBb0FRQUlDZ0JBQWhLQUFDQ0VnQ0FvQVFBSUNnQkFBaEtBQUNDRWdDQW9BUUFJQ2dCQUFoS0FBQ0NFZ0NBb0FRQUlDZ0JBQWhLQUFDQ0VnQ0FvQVFBSUNnQkFBaEtBQUNDRWdDQW9BUUFJQ2dCQUFoS0FBQ0NFZ0NBb0FRQUlDZ0JBQWhLQUFDQ0VnQ0FvQVFBSUNnQkFBaEtBQUNDRWdDQW9BUUFJQ2dCQUFoS0FBQ0NFZ0NBb0FRQUlDZ0JBQWhLQUFDQ0VnQ0FvQVFBSUNnQkFBaEtBQUNDRWdDQW9BUUFJQ2dCQUFoS0FBQ0NFZ0NBb0FRQUlDZ0JBQWhLQUFDQ0VnQ0FvQVFBSUNnQkFBaEtBQUNDRWdDQW9BUUFJS2ovQjI1OWhpV3dkWVpXQUFBQUFFbEZUa1N1UW1DQyIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2UvcG5nIn1dfQ==">
-<link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAInklEQVR4nO3dW2wUVRzH8dntttuWtlwKpUC5ClUKkQKGW4iCUYhKJMaEBqIhJkJiosQHA75UIyQmPmisEn1Q8UmMEhTDJYYIAloqRiFAUS5CuVOgUChlS7vdrg/brGNboDP/c/mfM79PeCnQ3bP/+fbM7LYLoRGzljoAfoV1LwDMhoCABAEBCQICEgQEJAgISBAQkCAgIEFAQIKAgAQBAQkCAhIEBCQICEgQEJAgICBBQECCgIAEAQEJAgISBAQkCAhIIroXwEVt5XpPf3/imiWSVmKWUADfF+a1ld4LYFVBCUheNHcTkJgsD0h9N93ZXZKdAXHopjsrS7IqIJ7ddGdTSZYEZEo6bnZkZHxAJqbjZnpGBgdkejpu5mZkZEA2peNmYkaGBWRrOm5mZWTS98KCUI9j2sM0Ywcya6aiGLEVGbADBbMex5AHzj0gI4YoD/+Hz/cUxn92KrE9nTHdgVBPF2wHwjEgtsPSi+dY2AXEc0xMMBwOr4AYDogbbiPichHNbS78MbmsZrEDoR4fmAxNf0BMBmEiDqPTHxAYTXNAHL6GjKZ9gDoD0v7g7aB3jNoCQj0CaRymnoBQj3C6RqohINQjiZbB4lkYkKgOCNuPVOrHqzQg1KOA4iGrCwj1KKNy1LgGAhJFAWH7UUzZwFUEhHq0UDN2nMKARHpA2H40UjB8O/+V1ne2Ttt44AGxtxkJJ7MiiWgkUZDTNiivZVBey8jCW6VFNx4c3Di8f7PY+zKI3IB0bT+JZKgjGRJ7m22JUFsi3Nyaee12dl1DgfuPigtiM0bXP/HQudljL0XCHWLvl6i2cr3UH361cwdSrL4pd9PBMZsOjumf2/pc+cmlM44W9rmje1GKSLwGCuDVT2Msum5v2byPFr7/0+SWOJcvTqkHAs/CxGttz/iyZvzCT5/5ra5Y91qkkxVQALefLi7e7LP8q7nr9pbpXojjyDwc2IEk6kiGPthR/uHOct0LkUhKQNh+3D6vLvuseoLuVcg6KNiBVKjaOWnX8WG6VyEFAlLk7S3TG2NR3asQT3xAOH/16Nrt7Pe2T9W7BhmHBjuQOttqR56+lq97FYIhIHU6kqEveDyrF0jwq6Xmnr+2r/ghKyPR4x+1d4RvtkSvx6KHLxT+fnrwvrripN972XJ49Kp5+/Oicd/rJBL+rTEuL7drV9jnTjTSc0CO4xQXxBzHmTm6fvnsI6caCqp2lu84VuLjXuKJcPXJIfPLzvpfKDM4hXk2ZmBT1aI9b87/09+3+3f6Ko8tkf9CmcbzV+XmGX+cKUp/2BiLNrdmerqFkv7NXoOob8qNJzx/BWZmdKT2s7TSohtVi/Z4vR0KgWcxS05hV27lnGvMo9zCedqn9148Ee6y1PzsNjV3LQNOYUCCgIBEWEB6n8BnZnRkuX6FQ56faGf9/xZ6/8vHpXQ4lOxyI95vg0TgwbLkGmhtxW73h29tmf6dxx+qr1m54R5P4+/hla/n/PLPUE+fsmz2kdfmHPJxXwzhFEbVN8fzJbCP525s2fNIdPFRQ1jwG0Z0suQU9telAdddPyxxuSnX6y3UnCqO+LoW8fHywaWbub+eHJL+MD8an1TS4OOuObAkoKqfJ1W7DokPr37zmKjF3NfW2lFba0elPywbcv3bl39Udu9i4RQGJGICMveb8IEl6pBhBwISS66B5o0/O27QjfSH1aeGnLjSz9MtvDj9aIaXlx8TydCG/WPveH/7aVF+y9MTTrt/p7hv7C5/1wCWBPT85JPuD5u2ZHkN6PXHD/b+hcTGWHTV97N81OM4zlMTzrzx5AEfn8iTJQEpE2uLbDwwdt3e8Vebc/zdwtzS82KXpBcC6rStdmTmXV4Hau8I32zJun47+9CFwkMXBra2Z/i+l8I+d6aMuOr70xlCQJ0qN89QcC8vTD/m4xu9nOFZmDp50fjiR47rXoVgCEidZbOPaHw/hiQISJFJJQ0vzfxb9yrEQ0Aq5EXj7y6ssezqJwUBSZed2f7J4l0jB9zSvRApEJBc0Uji44o9U4Zb9dTdDU/jJRra93bVoj3jixt1L0QiBCTLsw/XrZy3v19Oq+6FyIWAxCsvaVgx9+C0UZd1L0QFMQFNXLMEPxIUjSTmlF6omHrCiHREvbsZOxDVsH7N00ZdmTn60qPjLtr3OuF9IaBOM8fU3/t1moxwMisjEY0k8rPjg/JaivJjqf9sJYDRuCGgTmsrdvt7Y2HA4XUgIEFAQIKAgERYQFL/VzMQS+DBwg4EJAgISBAQkIgMCJdBRhB7mLADAQkCAhLBAeEsxpzwA4QdCEgQEJCIDwhnMbZkHBrsQECCgIBESkA4izEk6aBgBwISWQFhE2JF3uHADgQkEgPCJsSE1AOBHQhI5AaETUg72YfAzveFrV6wb/WCfbpXEQjST2HYhDRSMHxcAwGJioCwCWmhZuyKdiA0pJiygeMUBiTqAsImpIzKUSvdgdCQAoqHrPoUhoakUj9eXAMBiYaAsAlJomWwenYgNCScrpFqO4WhIYE0DlPnNRAaEkLvGDVfRKMhIu0DxLMwINEfkPavIXNxGJ3+gBwegzAOk6GFRsxaqnsN/8H/2NIbTNJJYbEDpbEaDU/cRsQrIIffgFhhOBx2ATksx8QBz7FwDMjhOiyN2A6E10V0d7isZptOCtMdKI35+GTj//C5B+SYMERJjHjg3E9hbsE5nRmRTooBO1CaQWOlMOthmrQDpdm6FZmVToqRAaXYlJGJ6aQYHFCK6RmZm06K8QGlmJiR6emkWBJQiikZ2ZFOilUBpfEsyaZu0uwMKI1DSVZ2k2Z5QGnqS7K7m7SgBOQmL6aAROMWxIB65LWqALbSIwQEJCZ9LwwYQkBAgoCABAEBCQICEgQEJAgISBAQkCAgIEFAQIKAgAQBAQkCAhIEBCQICEgQEJAgICBBQECCgIAEAQEJAgISBAQk/wJm8nxOE8HHPAAAAABJRU5ErkJggg==">
-<link rel="apple-touch-icon" href="data:image/png;base64,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">
-<meta name="theme-color" content="#1e3a5f">
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkcxMiBBcGhyb2RpdGUgRGVidCBUcmFja2VyIiwgInNob3J0X25hbWUiOiAiRGVidCBUcmFja2VyIiwgInN0YXJ0X3VybCI6ICIuLyIsICJzY29wZSI6ICIuLyIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjMDUwNjBmIiwgInRoZW1lX2NvbG9yIjogIiMwNTA2MGYiLCAiaWNvbnMiOiBbeyJzcmMiOiAiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFNQUFBQURBQ0FJQUFBRGR2dnRRQUFBSzJVbEVRVlI0bk8yZGE2eGNWUlhIMXprenB5VUJ3aldSdGdIeGczakxCMUlRQzRrRVNIMFFValhHcUxFdEdENFlOWUNKSVZHaklTSEJSQXhFWTR4YUk4WVEwRm9iVFl3eElhSklzTFZnYTBKNFZWTXUvV1loY2d0OVNPSDIzanR6enZIRDRIUXlNM2Z1Mlh1dHRWL3ovMzNxWSthY3ZkZituYlgyMmVjeFdiSG1BZ0xBbHR4M0EwRGNRQ0RBQWdJQkZoQUlzSUJBZ0FVRUFpd2dFR0FCZ1FBTENBUllRQ0RBQWdJQkZoQUlzSUJBZ0FVRUFpemF2aHNRQkoxanB5eStWYXliRVc1SGhHUlRlRCtRblM1Tm1FS2xwa0lnUFdNbU13MCtwU3lRTDI5R1NkaWsxQVFLUjVxVlNFeW1kQVFLWDUxQmt0RW9lb0ZFdkxFYlRvKzdEb2VJQmJJZVA3MHhDN0JKMmtRcGtNVTR1UitoS0JySkp6S0JqRVlsblBHSXRObE5pRWFnNW1NUThnQ2swWXRCNGhDb1lkeGpDWHBLM1FsZG9DYXhqaUxRWTBtZ2QrRUtsRUJ3R3hKMVR3TVZhTldZQmh0UWF5THRjb2dDVFE2bFVoeVhadzhZZlg3TmtXczFtdUdsN3h6Q0VzalpVV2lxU3hPa2xJb3JGUVVra1BiQk4xa2EwK0dYM2Rvb3NhU2lVQVNhRUM5bXNNYU90RVlCMHRpUlhsaWs4QytRMHFFMk9weEtzeGJ0dlFlZWlqd0xwQkdkb2NGejZjMG9JbzBKMlNHZkFvbm41OEhSOHV2TktQeTJoVm5PdkFra0c0NlExUm1FMmM0QUhmSWprR0FnWWxGbkVFNmJRM1BJZzBBcmhXQWExQmxFUXlQM0Rya1dTS1Ruc2FzemlIVmZBbkhJcVVDeTlzU3V6aUIyblFyQklYZlB4c09lQ2ZTN1kzU05aYVhRdVh4QXhWRUc0dHVUcWpwRFdIVFRieDd5K1hZTzJET0tSU3J5dTVEb1FxQ3hod2pzV1FrcGg5d1VNdlVTSm1MUGxLZ3poR25mbWFHMlExY2dUbm1ldHNRekZxTWdlSmtNZVpnRHdaN21HSlV6TDVNaFJZR3NNeXJzR1lUdmtPcGtTRXNnMkNOSXlBNnBDR1RkWE5pekVuWXJqWU1vT2VSdUR0UzhRc09lc1RRUFM5eVhNcGpGQy9aTW9CZWNvQXFaaXd3RWV3UmhPaVNPc0VCMmpzTWVJNW83TklwNEVwSVV5SzU0YVR6ak55V3NHam9IaFN5VW56cEErakVpbkhDSkNjUkpQK0dFSXlJYUZqTHRKS1NZZ1dDUE5oeUhwSkFSeU1Kb1RIMEVzUWltVkJMU3lrQU5yVWY2WWRJd2dIcEpTRUFnNi9RRGUwU3dQcXNYU1VJcXZ4Zm0vWWwvSXFKeno2MHZ1bGhzYTkwdUxTMW1aeGJwamY5U1dZcHQxaUhGdWhtTmxXanVEV1VXSjE5dTBrLzEwWStYdjlndHY5MnlwTmRmeTE1NUpYdnhjSGI0WDluQkE5bWhGNmlxNUhka1NKT29hdHl5S0orQmdrZy9lclJhdEg1RHZYNUQvZjdOYi8vTHFWUDVZMy9LZjdNbmUycC9DQ1pOUUNNSnVWNUlUSEQyTXpOVGJkdlIvZDBmdXZzUFZ0dDJVS3ZscFJXYzZ4c2NXQUxGOVF0TDJ0U3pHOHVkRDNRZisydjl2cXQ4dDhVQTVpQUtaNkFRWmo5K3FUZGQwWDMwOGVyTFgzRy82eVpKU0h5Q1lTOFEwcytLdEZybHQ3NWQvdURIbEdXK205SUl6bEJLWmlDa24wR3F6OTFhM251ZjQ1MjZUMEtoWEkxUGt1cEx0MWUzM2VHN0ZibzRFbWphMGsrZjh1NTc2bzJYdWR5ajQ5TXhTNEZHcTJiaXl6L1dyRDJuL09GTzM0MFlablN3cktkQktHSHExSnV2cVQvNFlkK3QwRUxsV3RnUUVkU3Zxc3FPdkRUK3YvSzhucG1obVhkUVVWaHZ2cnp6cSsyOVQxaC8zWlExUjY1ZG5qMndQSHZBUWN4dEJFcndCSDV4c1gzREJ5WjlvQ2pxVFZmV0g3bXgvUHdYNkowWG1tNit2dTc2K3BKM1owZi9iZDlDZlRySFRsbk1RMlJLV1BvVG9FNG5lK2JwL0h2M0YxZHR5bi8rZ01VRzZxMGZFMjhVQjZraFV5OWhMdXRYdFcwSDVXOGZFdlVWVnhwOHM5MnFkdHpTOExQWm9SZXkvZnZxRzdhWXRXMzd6WFQ2amNGL3lSLy9DNzMrbXRGR211T3NpdG5jem1GMEN1WlNvTTUvanZ1NmxtbEIreE5iczM4YzFOditxcEVYT1pYR1dSaGdZU3dRVm9DU1FXUTFTRGNEUlhBQ255NXVscVJkckFNNW83ajBrdjRGOE9xbXJlWFBIbXo2ellXRjR2SlowOTFWdDl4YWZ1Zis1cDl2ZmZQcitXLzNuUDM3bVRPbWV3eVFwQVNpaFlXemYxNWNOUHZ1VzI4WjcrN1l2Tm5uNjlwbUwyR0RTVFNEdFd2TlBsOUYrVGpIWkpMS1FPVTM3anA3R24vcGV3MitXUlRsWFhlYjdzNzAxdFhxcHEzMXhlL3EvelhmOVhEMjhzdW1PdzBOczNVZzAxTXd4NU5vckFNTllmZXNqOUZwdFdJSnd5bVlkeHljaUdFT0JGZ2tOUWVpRThlcC9mOGVGV3ZvdlBNTXZudnloTUdIMndXZGY3N0I1NG1vMngyNkZrYWRydGtXZ2lRcGdZckxOL2IvYlBabzg4SkNjZGw3bW41NC9ZYnV3N3ZxemRjWXRTM2ZzN3YxdFR1TnZoSUZLR0VtRkVXMS9lYk9FMzh6dFllSThqOC9xdEVpN3lTVmdleHA1ZlYxMTQvL3J6eXZMNWloQzlmVlYxOWRiZmtRclZ0dnMvMDMzOHoyN1dXMEwxd2dFQkVSclQybisvdEg5RGFmLy9JaFdqSmNHWThFbERCOWxwZGFQLzJKNzBab0FZSFV5WGYraU9aZjlkMEtMU0NRTHRrL0Q3VysvMTNmclZBRUFtbHk4bVRyOWk5U3ArTzdIWXBBSURWT24yNXYvM1QyMHB6dmR1Z0NnWFE0TnQvKzdLZXk1NTcxM1E1MUlKQTgyVk5QdG0vY2tqM3p0TytHdUFEclFLTE12OXE2Nzk3ODE3L3kzUTUzUUNBWnNya1g4NGNlekhmdlNuWEJjQ1VVQlhMNWlMOGZ5ako3L3RsczM5NzhqNDlrenovbnV6VmpjSEJMbHBsQW95OGF0bnNpUHpqS012djdrNU0rME8xbVM4dTB0RWduam1mejgzVDBhRFozT0p1Yml6M2Y4Si95UXdraklxS2xwZlpuUHVtN0VWR0NzekRBQWdJQkZoQUlzTkFWeU5jUE9BQnk5VlNNc1VDQ0wvZ0Vmc0g3Z1lCL0lCQmdvUzRRcGtGZWNQWllzTGVmL1FaKzhmbXozeWxjdXdBajJBMnJpemtRcXBoalhMN1dBcE5vd01KU0lLd0dSWTNncTNZZFpTQlVNV2M0ZmkwVFNoaGdJU25RNUNxR0pPUUF1M2ZhY2JBWENDZnp5Y0FaU3VFU2hpVGtFZmZwaDVnQ0lRa2xBSE1RWFUraWtZU1U4UFZPWEhtQnNDQVVMQnBEWS9PRGMwTllyRXJoRmRLeU5JeW54azkxcVpRd0pLRUFVUm9VQVlFc0xNWk1TQkRyZEM1eURxUTFpVzdvT3h4aTBqQ0FlalhCMjg5K1l3SWtpSy8wUTZxbjhhdGFqMExHeEhydUxJaVlRR09OaGtONmNPd1JYQUVPNVdvOEhESWluSEJKQ3NSSlFzQUM3K21IeERPUVhlTlF5SXpnTE1PS1g3NTBVY0thVE9MZ1VFT2EyK05tT1ZkZUlMdENSbkNvQVV4N05PNmVjRGVKYm41QXdLR3hOQStMeTB0SktnSlptOTQvdHVEUUVQMkFXSjl6S04yOHBaV0JtSVdNNE5BQVJ2WTRLMTQ5RkVzWUhCSWhaSHZJeTBJaUhHb08zeDV0Qkc0b213enptSmptVzg5TSsrNCsvWkFEZ1VqSUlab21qU3k2N01VZWNsUENyQ2REUGFhdG5FVmtEL205bUFxSFJwR3l4eGt1U2xpUGxmcHBkS0FrWE03c3VpWVNWUTd1TXRCS1hUSTZnRkpOUlpIYVF5NHpVQS9aUEVUeHB5THJ2b1JnRDdrWGlPUjZIcnRHblBZSFlnOTVFWWdtbHExcDBFaERIZkwwcWdJL0FwRjBJR0xSaU5uTzBPd2hqd0tSUWpoQzFvamZ0Z0R0SWI4QzBXcW5ZSHlOeUxkSklvM1JpSklVbmdVaXRlaU1udWU3TkVsdzd5SGJReUVJMUVNdlA0OWRNZEtRU1dOSFlaYXRRVUlSaVBRUHRjbHJqNllqTGJ1MVVRSlBQSDBDRW9nYXJFcExCVTVqSVZzcXF6a0xnZ2hoQ2RURHk4Rm5xcFRTakNxV3hOTW5SSUVvdHFOUWhFaTdIS2hBMU93aWE1Z3hOU1hxbm9ZclVJK29nN3NxQ2ZRdWRJRjZOTHpsSS9CWTkwbXBPM0VJUkNhM0RZVWM5elI2TVVnMEF2VXd1dnNzbkRHSXRObE5pRXlnSGhaM0Fic2ZsU2dheVNkS2dYcFkzMHl1TjA0Qk5rbWJpQVhxSWZKTWd0MzRlZHgxT0VRdlVKKzRYbzhmdXpkOTBoR29SL2dhSmFOT2o5UUVHaVFjbVJLVFpwQ1VCZXJqeTZTRXZla3pGUUlOb2VmVE5CZ3p4RFFLTklxZFVsT295eWdRQ0xBSTVhY09RS1JBSU1BQ0FnRVdFQWl3Z0VDQUJRUUNMQ0FRWUFHQkFBc0lCRmhBSU1BQ0FnRVdFQWl3Z0VDQUJRUUNMUDRINTNBL2QyV2VydTRBQUFBQVNVVk9SSzVDWUlJPSIsICJzaXplcyI6ICIxOTJ4MTkyIiwgInR5cGUiOiAiaW1hZ2UvcG5nIn0sIHsic3JjIjogImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBZ0FBQUFJQUNBSUFBQUI3R2tPdEFBQWUwVWxFUVZSNG5PM2RlWkNsVlhuSDhmUGVYaGdwZElZU2hveXlSSVdJSWxhcGNSbWN4QTBSb29sSm9ZQnNpVlpsMTVUUk10R29DUlZNYWNVS3VNVzRoRUpNb29ha0NLSTRHbEFIVkZBMEdLM0FqQ0ZxbEdVV1VFWms2ZTNlTjMrMGFacnUyN2ZmK3k3bjJiNmZQeTFxK25qdjh6eS9jODdidDI4eE5iMHhBUURpNlVrdkFBQWdnd0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlpZ0FBZ0tBSUFBQUlhbEo2QVVETDV2ZnQ3K2hmbnRxOHFhTi9HUkJSVEUxdmxGNERNSjd1Um53VHhBUE1JUUNnbDg1QlB5NkNBV29SQU5EQ3g3aXZna2lBRWdRQXhNU1orS09SQjVCQ0FDQXJodjVvaEFGeUlnRFFMU1orRStRQk9rVUFvQlBNL1hhUkJPZ0NBWURXTVBUeklBelFGZ0lBVFRIM3BaQUVhSWdBUUUzTWZUMUlBdFJEQUdBOHpIM05TQUtNaFFCQUpjeDlXMGdDVkVFQVlCVG12blVrQVVZZ0FEQUVjOThma2dDckVRQjRDRWEvYjhRQWxpTUFrQkp6UHg2U0FJa0FnTXZSMzhWMDQ0V0NQd1JBWEtZbm1yYkp4WXNKaXdpQWNNeU5LcnZqaVpjYXloRUFnWmlZUjc1bkVHOEJWQ0VBUXRBOGR5S1BHOTRYeUNJQW5GTTRZcGdzYStITlFtWUVnRnVxcGdselpGeThmY2lBQUhCSXoreGdjRFRIdTRudUVBQ3VhQmdXakludThQNmlYUVNBRStLamdibVFFMjgzV2tFQWVDQTREaGdFc25qcjBRUUJZSnRVLzlQODJsQUpxSUVBc0VxazRlbDIvU2dNVkVjQTJFT0hZMTBVQ2FvZ0FJekozTmkwdEhVVURFWWdBTXlnazFFYnhZT2hDQUFiY2pZdzNlc1ZWWVFWQ0FEdHNqVXRIUnNIUllWRkJJQnFlUnFWTG8ySjZnSUJvQlROaVR5b3RNZ0lBSTB5OUNRTmllVW91WmdJQUYzb1F3aWkvS0loQUJUcHV2M29QVlJCSGNaQkFLaEF5MEViYWpJQ0FrQmVwNTBXdHMzbWpybSt4WDl0K3BhdExmNXJobENjdmhFQXdycHJNUGZkMWU2SWI4SjlQRkNsWGhFQVl0aGJqVVhQdUsvQ1h5UlFyaTRSQURMWVVvMW1hOXhYNFNNU3FGdG5DQUFCSFhXUjlSYnlOL1RYWWowTUtHQTNDSUNzMkVDdEVHZm9yOFZvR0ZESlBoQUErYkJ2V3NUUVg0dTVNS0NrclNNQU11bWlWUXoxU2Y2aDMrNHd0YjcrVGdXdmJkTUlnQnpDZGtqWGMxUERsSXp3LzNGZFlTdmNPZ0tnV3pFYm80dVphR0lPTG9uNUNzU3NkdE1JZ0E1RjZ3YytmTHVXT0s5TXRKcTNqZ0RvU3V1ZG9Ma05XaGx3bXVkYXU5eS9YS0dLM3pRQ29CTkJHcUQ1SU5NOHhmTHcraG9HYVFIckNJRDJSU2o5aG1OTDU4eVM1ZThsamRBSTFoRUFMV3UzNkxWVmZKTWhwWEJDcWVYcGRmYmRFZFlSQUcxeVhPdTFSNUsyZVdTTGo1ZmRjVjlZUndDMHcvRnB0OTRNVWpXQUhMRCtMamh1RU5NSWdCWjQzZURVR0RwNkpvNVhwdDhVcjUxaUZ3SFFsTXVhTmoxbElyRDdCcm5zRjdzSWdFYjhWZk80azBYSldBbkw0dnZscjJ2c0lnRHFhN0dPTlJTeHhWR0NSUmJmTzJmdFl4UUJVSk9uOHJVNFByQ2F1ZmZSVXhNWlJRRFU0YVp3eHhvWjR2TUNGUmw2VzkyMGtsRUV3TmpjbEd6MU1jSG90OGpLKyt1bW9Td2lBTWJqbzFpdGpBWTBaK0s5OXRGV0ZoRUFZMmlyVEJuOXlNekUrKzZndjh3aEFLcHlVSjBWcHdDajN5djlCZUNneTJ3aEFDcXhYcGY2T3gvWktDOEc2NzFtQ3dHd1B0TVZhZUxzajh5VVY0WHBqck9GQUZoZksrV29lZm96K21QU1hCNTJtODRXQW1BZFJndFJjMjlERmJXbFlyVDFiT2xKTDBBMW95V290cVdoVU1VeWFQZDc3YXRvcFhHNitKSjZUemdCck1ueDlHZjBZeldkbFdPMERhMGdBSWF6V0hZNkd4aTJLS3dpaTgxb0JWZEFRMWdzT0lWOUM0dXFGRW5tNnlEdWdyckRDV0FsbDlPZjBZOXhhU3NxaTQycEh3SHdFT2FLakkwL3VxT3R1c3kxcDM0RXdFTTByekJWMDUvUmorWlVsWm10RHRXUFp3QVBzbFZicXRvU2pxMWJTRGtmQ1RSdk1SNEdMTWNKNEdjTVRYOXRCM05Fb0tycURIV3JjZ1JBU3FicWlZMC9CT2twUDBNOXF4bFhRSllxU1UvN0lTWTkxMEhjQmJXQ0FHaUs2WTlRUEdVQW9sOEJOZHdGS0puK2pIN2twNlFtcmJTd1RxRlBBRmJPZ0VvNkRWaHVkT0hsLytOeDlWZ1pBaDJKZXdJd2NmWFB0UStVMDFDaUpucFpwOUFuZ0NhWS9rRFM4VWdnN1BodUx1Z0pRUCs5SWRjK3NFVzhZdlUzdFVJUlR3RDZDMFc4bDRCeGlUOFNhTmlZTVI4R2hBc0Fwai9RRVRMQW5IQUJvQnpUSDZhSlp3REdFaXNBbEcvL21mNXdRRFlET0FTTUpWQUFNUDJCUE1nQUt3SUZRQk5NZjJBc3BqTWdqaWdCb0RuVm1mNXd5ZTd6QU0zam9sMGhBa0R6NVEvVEg0NEpaZ0FYUVZXRUNJQW1tUDVBRTNZeklBTC9BZEFreVpuK1FITkdNeURDSWNCNUFCaDlDNW4rY01ab1NSc2RJTlU1RDRBbXBMYi9SbHNGR0cxRVlhczlCTGpuT1FBc1h2NHcvZUdZeFF6d2ZRaHdHd0JNZjBBaE1rQVZ0d0dnRTlNZmtNb0FyT1l6QUhSdS81bit3Q0tSRE9BUXNKckRBR0Q2QS9xUkFSbzREQUJibVA0SWkrSVg1eTBBekczL0FhekdJU0FQYndGUUc1Yy9RSDdtTG9LY2NSVUFDdk9aNlErTVp1dVhnaFFPbVNaY0JVQnQrWGNFVEg5Z1NmNTI0QkN3eUU4QUtFem10Zll2VEg5Z2hiV2Fna05BcDV3RWdNSm52d29MRjdDb28xYmlhWEJ5RXdDMTVaLytiUCtCb2ZJL0RPQWl5RU1BR0VwanBqOHdncUVHTVRSMlJ2QVFBTFZsM3Y0YkttNUFTdWFIQWNFUEFlWURRRnNPYy9VUGRFUmJjMmtiUGpXWUQ0RGF1a2grcnY2QjVqSS9ESWg4Q0xBZEFMVVRPUE5ienZRSHhwSzVaV29QQk91SEFOc0JvQXBYLzBDTERIMHl3QzdEQWFCcSswOVJBdG1vdWdneWZRZ3dIQUFtc1AwSGFxTjl1bVkxQUV4cy95bGZvS0djRjBFQkR3RldBd0FBMEpESkFHRDdEOFRCSWFBN0pnTkFENlkva0FHL0VkUVJld0dnYXZzUHdKbFFod0I3QWFBSDIzOGdHdzRCWFlnU0FHei9BVlFVWjF3WUN3QTloeXkyLzBCbStnOEJlZ1pVUmNYVTlFYnBOWXloM3V2YmVwNHovVmNvSC9QWTh0Z25TSytpSllOK01UT2I1bWJUN0d5YW1VbXpzMmwycHJqL2diVC83alFZU0M4TyticFB5YlRwMUtUMEFzWmdMbDNqS0U5NWNmKzg4NlZYMGJHRmhlTE9POVBlUGNYZXZXblA3bUxmM25USDdjV3VYY1YzZHFaNzc1VmVITFNZMzdmZlVBWllDb0I2MlA2akhaT1Q1Wll0YWN1V2NzWC9YcGJGclQ4c2R1NU1PMjhxZHQ1Y2ZQMXJ4VzIzaVN3d2lPbGJ0Zzd0d2JsanJtKzNCNmMyYjNLLzZUUVRBTzdmQ1ZoVkZPV1JSNVZISHBWZWRQTFAvb2Z2ZjYrNDlwcmkyaDI5TDM4cDNmMWoyZFVoUDBPSEFHTVBnY2ZGOWgvNWxZOTU3T0EzWDltLzZKTDVYZDlkK1B5MWc5ZTlvVHppU09sRnVaTHRhYkNWT1Y2Yjh3RElnK21QNFlxaVBQN0ovVGUrZWVFYjMxcjQ1R2NHWjUyVEh2RUk2VFU1UWRPMXdrWUFLTG4vMGZQYlpqQ21LTXF0Si9RdmZPLzhUZi9kLzdzUGwwODhUbnBCYmlscFVpVWphMTAyQXFDZVBNYzNkaUlZd3dFYkJxZStmT0dMWCs1LzlPUGxVNTRxdlJyYjhyU2U3MXNnQXdHZ0pFdVY3Q3pnUVZFTVRqNWw0WE5mV0xqMHN2SVp6NUplalRkS1dsWEo0QnJOUUFEVXcvWWYrcFhQZmY3Q3B6L2IvOXNQcEVjZUlyMFdremdFTk9RMkFOcWxaRThCbHdZdlAyUCt1cThQempvbkZZWDBXcHlnWVN2U0hnQ2FQNDNOOWgrdE9mamcvb1h2WGJqOHl2SnhSMHN2eFJqTmh3RDl0MERhQTBBRGRoUElvOXg2d3NKVk93YS84aExwaFhoQTIxWkJBTlRFOWgrZE9PaWcvc1gvMFArenQ2WWV2VmtWelZpYjZpTFRjUC9EUGdLNUZjWGd0YTlmK05pbGFkTW02YVhZMW03enVyd0ZVaDBBYXJIalFOZks1NSs0c1AzcWNzc1c2WVhZUUV2VzR5MEEyUDdEamZKeFIvZXYyRjRlZnJqMFFnelRjQWpRVEc4QUtEODZBUm1VUi8xOC80cnQ1ZUZIU0M4RTlXa2VaWG9EUUMwT204aXBQUHlJL2lmK2xlY0I2Nkl4YTNBVkFOei93S1h5Rng2L2NNbkgwdlFCMGdzeGlWdWdFWlFHZ05wREU3c01pQ2kzbnRDLzROM1NxOUJPYlh1cUhXaEtBMEFjMjM5b016anRqTUdaWjB1dndpVGFlUzErQWlERDBVenQvZ0pCOU4vK3p2THh4MHF2UXJVTVRlcnBGa2hqQUtnOUxnSENIdmF3L2djdlNwTm12c29iUzNTT05ZMEJJSTRESTlRcW4zamM0UGRmTGIwS2UyanFvWndFQVBjL2lLUC9oamVXUng0bHZRcTl1QVdxVGwwQWlCK1UyQ2xBdXcwYkJtOTdoL1FpN0JGdmJmSGh0cHE2QU5DSjdUOVVHWng4U3ZtMHAwdXZRaThhdGlJUEFlRG1PQVpVMTMvem4wc3ZJVFFmWThkREFMUkkvSkFJVkZSdSs2WHkyZHVrVjJFTURiNkNyZ0JRZUVlV09FNUNxOEh2L3FIMEV2VFMyYmJhUnB5dUFBQlEzZUNrRi9IclFHakMvQ2RLV3J5SjQzaG9VWEhqZjZRZjNkWDBYNW1lVGdkc1NCczJwRU0zbDRjZFp1YVRWcjNlNEZXL1BYSGVXNlRYWWNuY01kZTNkVGlZMnJ4SjI0NStYSW9LWGVkTHFmTWdpU1VUZi8zMjRndFh0L2t2OW5ybFlZZWw0NDR2ajMveTRKblBLcCs5TFIyd29jMS92MVdEMDA2Zk9QOHZVcjh2dlJDTnBtL1pxbkJYTjc5dnY1NEh5SW9DQUZCaE1DaDI3MDY3ZHhkWC8zc3ZwYlJodytDNXp5dlBQSGZ3d3BQU3hJVDA0bFk1NU5CeTJ5OFgxM3hSZWgwd3lmWXpBTzUvMExtWm1kNW50MCtjKzRySnB4M2Z1K1RpTkQ4dnZhQ1ZCcjl4cXZRU2pHbXgyZlhzNWV1eEhRQmQ0LzRIUzRvNzdwaDR3eDlQYm50bWNmMTEwbXQ1aU1HTGYxWGowVVFIV25nMEFnQVlRL0g5NzAzKytvc256bnVMb212M2pSdkxwenhOZWhFd1NVc0E2SHdDREF4UmxyMzN2Mi95N0RQU3ZmZEtMK1ZueXVjOFYzb0pHSU9lY2FjbEFHcmdBUUFFRlorL2F2S3MwOUxzalBSQ1VrcHA4SnpuU1MvQkdCNERMT0szZ05iRTdlR2loUjFmU2RQVG8vK2I4dUNEOHl4bXRmNEY3MG4zM3lmMTA5TkNQeW40cXZieTZjOVl1TzdyRmYvajNrY3U2bjNvQTUydVJ4V2R2d3lxQkFHQWRaUkhINTJtRlF5NU5aU1BlcFQwRWhTWW1DaVBQcWJpZjFzKzhwQk8xd0pEVkZ3QjZia1JBNEFNbEF3OUZRRWdhK2p4a1BzZndJMmg3Y3k5VUxJYkFLWWZ2QUR3eE80NHNob0FBSUNHQ0FBQUNFbytBR1FmaHZBQUFJaEE0V01BRGMrQjVRTUFBQ0RDWkFEWWZlUUN3Q1dqUThsa0FBQUFtZ3Y5U1dCK0ViaVNtZG4xLzV2ZWhOalhLTTdQcDNJZzg2TlhtNXhLUGJsTlZiK2YrZ3ZyL2xmRnd2ci9UUnd0ZmtPa1JhRURZS2pJMVREVTFORkhydnZmRFA3Z05mM3p6cyt3bU5VbXozbEZ5MThKMlVEL1hlOGJuSG0yMUUvdi9mMkhKdDc2SnFtZnJoOS9GR2cxNFNzZ0RjL0JnYllVdDk4bStlT25weVIvT3NZblBnQjVCZ0MwWjk5ZXlaOCt0YzRmYlFWV3NCY0FScCsySTRRSEhwRDg2ZXY5MVc1MHl1Sm9zaGNBZ0Y2ekZSNllkMGZxT1R6TWloc0FmQVlZN1pQOTRvUUt2d0lVbk1MUEE4dUtHd0JBK3g2MlFmS256ODFML25RWVJBQUE3Wkg5c3EzNU9jbWZEb01JQUtBMTVhTVBsL3p4c3dRQXhpUDUxRWo4ZDJCUkJWOEtYMTM1YzFzRWYvcmd0RFBLRjV5NDduOFc3VXZobFp2ZnQxL3cxNGVNL2RxQXhWKzBzbzR2aFRmajRJT3JKREZmQ3QrZHFjMmJiTzFyZzE0QlJYN3VEMkNGc0FNaGFBQU14ZStBQXU3UjVzc1JBQUFRRkFFQUFFRVJBQUFRRkFFQUFFRVJBQUFRRkFFQUFFR0pCWUN0ajBzQVFFY0VoNkdsVHdMek1XQVpmQ244Q0JPVGFXSkM3S2N2TjFmMXF3ajRVdmhPMmZvd2NERTF2VkhrQjlkNGpkb0tBTDRKb0hXU1h3cC94c3VrdmhTK2ZNeGorLy8yYVExL2k2TDR6MjlPbnZRODZWVlkwdWtRRUJ4dTQrSVpBRkJIZWR5VCtwZGZxV0g2cDVTS2EzZElMd0VtRVFEQTJNcVRUbDc0MUdmTExaSi8rM081M2pVN3BKY0Frd2dBWUJ3SEh0aC81d1VMLy9pSmROQkIwa3Y1ZnpNenhRMWZrMTRFVExMMEVCaVFORGs1T1BQc3dldi9WTS9HZjFIdnFzK2wyUm5wVmNBa0FnQll6K2JEQm1lZVBUajN0OHJEajVCZXloREY1WmRKTHdGV0VRREFNQTkvZUhuY2s4b1R0ZzFPZkdINTFGOU1QYTJYcGZmZDE3dnFjOUtMZ0ZVRUFHd2J2T1RYaW1PZjBQUmZtWm9xRHpnZ0hYaGdPdlRRY3N1ajB4RkhsRWNlbFlxaWpRVjJxM2ZGNVdtRyt4L1VSQURBdHNIWjUwb3ZRVkx2b2c5Skx3R0dhVDNZQWxoUGNjTlhpMjkvUzNvVk1Jd0FBS3pxZmZpRDBrdUFiUVFBWUZLeGEyZnZVNStVWGdWc0l3QUFrM3B2ZjFzYXlQMFZQTGhBQUFEMkZOKzhzYmY5U3VsVndEd0NBTEJtTUpoNDA1OUlMd0llRUFDQU1iMlBYRlRjK0EzcFZjQURBZ0N3cE5pelorS3YvbEo2RlhDQ0FBRHNHQXdtWHYxNzZhYy9sVjRIbkNBQUFETjY3L29idnZzRkxTSUFBQnVLNjc0eThjNTNTSzhDcmhBQWdBSEY5NzQ3K2NwelVyOHZ2UkM0UWdBQTZ0MTE1OFRwcDZhN2Z5eTlEbmhEQUFDNjNYUFA1Rm1uRnovNFgrbDF3Q0VDQUZEczdyc25YL2JTNHBzM1NxOERQdkY5QUlCV1A3cHI4dFNYRmpmZkpMME91TVVKQU5Db3VQbW15UmU5Z09tUFRrVU1nT2xidHE3K0grZU91VDcvU29DaGVwZGZObm5LaWNVUGZ5QzlFSitHTnZ2UXNlQ2VwUUNZMzdkZmVnbEF4d2FEaWZQUG0vaWRWNlVISHBCZUN1cXdOYWJFbmdGTWJkNWs2NVVDdWxiY2R1dkVhMS9EWjMyam1kcThTZXBIV3pvQkFHNzErNzBQdkg5eTJ6T1ovc2lKM3dJQ2hCWGYvdGJFNi82SXIzZEhmZ1FBSUthNDQ0N2V1eS9vZmZSaS9zWURSQkFBZ0lEaTFoLzIzbk5oNytQL2xPYm1wTmVDdUFnQUlLdml1Ly9UZTgrRnZYLzU1N1N3SUwwV1JFY0FBRm5jYzAvdmlzdDdsMzY4K0NxZk9JRVdCTUNENW82NVB1YUhRZENoK2ZuaW1pLzJMdjFFYi90bjB1eU05R3JBUno0ZkltZ0FUTit5bFRwQWQ0cnY3Q3F1MmRHN2RrZnhsUytsKys2VFhnN1dFWGJuWnl3QTV2ZnRGL3pRQkxDbW4veWsyTFd6MkhsVGNjTU52V3QzcEgxN3BSY0VBZVkrM0NvWkFId1lHQ2JkZTIreGQwL2FzNmZZZlh1eGExZXg4K1owODM4VnQ5OHV2U3lZSkx1ak5YWUNBRmJvYmI4eTNYcHJtLzlpdjUvbVpvdTV1VFF6azJabjB1eHNtcGxKOTk5ZjNIVm4ycnUzMkxNNzNYOS9tejhPa0VNQXdMYmVKUmNYWDdoYWVoV0FTZnd0SUFBSUttNEE4SzBBUURSOEU4QUtjUU1BQUlLekZ3RDg0aEFBaFN5T0puc0JBQUJvaFhBQThLa3VBR0dKRDBCT0FDdnhIQmh3aWRaZUxYUUFSSDc2RHlDRkh3S2hBd0FBSWpNWkFCYWZ0Z053ek9oUU1oa0FBSURtNUFOQTlqazRud2NHSWxENEdXRHhYd0ZLR2dJQUFDQ0NBQUNBb0t3R2dORkhMZ0Q4c1R1T3JBWkFpM2dNQVBpbThBR0FFaW9DUU1QREVBRElSc25RVXhFQUFJRDhDSUExY1FzRU9FQWpqMkE0QUZwODhNSnRJQkJLaXkxdjl3bHcwaE1BU203RUFLQnJlc2FkbGdBQUFHUkdBSXpDN1NGZ0dpMDhtdTBBNERFQWdISHhBR0NKN1FBQUFOU21LQUQwUEJoWmppTWtZSlRPNWxVMTZCUUZRRDNjQWdHb2p2dWY1Y3dIQUFDZ0hsMEJvT3B3dEVUblFSTEFDRHJiVnR1STB4VUE0cmdGQWh5andWZndFQUFPYnVJQTJPSmo3SGdJZ0F4MEhpY0JERVhEVnFRdUFNVHZ5RGdrQWk2SnQ3YjRjRnROWFFEVWsrRTR4cDRDTUNGRHEvcTQvMGx1QXFCZDRqc0ZBTzJpcVlmU0dBQUtEMG9BMElUT3NhWXhBT3JoRmdnQTl6OWo4Uk1BN2VMQUNMaEJPNjlGYVFEb1BDNGxEZ0dBWW1yYlUrMUFVeG9BOWJSN05HUFhBRGpRYmlON3V2OUp6Z0lnRDdXN0RDQXlHck1HdlFHZzl0QUVBTlZwSG1WNkE2QWVib0VBTE9IK1p6UnZBWkFIaDAxQUZWcXlIdFVCVU8vb3hDRUFRTkt4L2RkOC81T1VCNEJtN0RnQUpXakcyZ2lBOVhFSUFNeWhiYXZRSGdBYWJvSFd3cjRERUplbkRWM2UveVQ5QWFBRXV3bkFFQnEySXJjQndDRUFjRS96OXQ4RUF3R2c1QmpGbmdJd1FVbXJLaGxjb3hrSWdObzRCQUNPc2YxdnprWUFLTWxTSlRzTEFHdFIwcVJLUnRhNmJBU0FjaHdDZ014b3VsWTRENERXajI5cjdTOG9SeUNidGRxdDllMi83L3VmWkNnQXJCeXBBQVJuYUZpWkNZRGFPQVFBbnJEOWI1R2xBRENVcXdCaXNqV21pcW5wamRKckdFUHRURzc5WGNtMkRRR3dSUC8yMzFZQVdEb0JKRTB2TGhkQlFHYjZkMTE2QmxSRnhnS2d0Z2pYZVFCYUVXZGNSQW1BTG5BSUFMTFJ2LzIzeUY0QTFENWt4VWwxQUxVRnVmMWZaQzhBVk9FUUFHVEE5cjhqSmdOQTFTR0FEQUE2bFhQNmg5citKNk1CQUFCb3ptb0FjQWdBSW1ENzN5bXJBV0FGR1FEVVJ2dDB6WEFBbURnRUFHZ2QyLysyR0E0QWJiZ0lBbHJFYi81a1lEc0FWQjBDUmlBRGdMRmticG1ZMi85a1BRQ2F5SHdSUkFZQUZZMW9GbFdYUHc2WUR3QnRDY3o1Rk9pSXR1YlNObnhxTUI4QVRYU1UvRHdNQUdyTGZQVWZlZnVmZkFTQW9Sd21BNEFSRERXSW9iRXpnb2NBYUNMeklTQ1pLbkVncDh4WC95bjg5ais1Q1lBbWFady9Bd0JVcDNENis5aitKemNCa0ZTK0pUd01BQ295OUZ2L0NrZE5iWDRDb0luOEowRXlBRmlTdngyNC9GbmtLZ0FVSmpNUEE0RFI4bC85TjZGd3lEVGhLZ0NhNkc1SFFBWUFheEdaL216L2wzZ0xBSVZQZzVQS2pReWdtYzdwNzJ6N24vd0ZnRGtjQWhBV3hTL09ZUUNZT3dUUUJnakkzT1dQdisxL2Noa0FpUXdBZEdQNksrRXpBTlFpQXdCYnYvYmptOXNBMEhrSVNHUUFZcE9hL216L2gzSWJBSWtNQUpSaCttdmpPUUFhSWdPQUZsbWMvdTQ1RHdDajZVMEd3Qm1qSlcxMGdGVG5QQUNTell1Z1pMWmhnTlZHRjdQYTdiLzc2WjhpQkVCRFpBRFFoTkhwSDBTSUFHaVk1R1FBVUkvZDZSOWgrNStDQkVEUy9YYVNBWEJKY1BvM3BIbGN0Q3RLQURUVTlWbVNESUF6c3RPZnk1K0tBZ1dBNW91Z1JBYkFFZFBUUDg3MlA0VUtnRVFHQU4xaitoc1NLd0QwSXdOZ210MTcvNWpDQllEeVEwQWlBMkNXK1BSbit6K3VjQUdReUFDZ0EweC9pNHFwNlkzU2E1Q2h2MXpXSGZRY3FLR0Joa0xWMzg0NlJUd0J0RUw4SEpBNENrQUJCOU0vc3JnbmdOUkczZVRaT0lnZnJvR2hORlNtbFM3V0tmUUp3TW9ienlNQktLUmgramRuWlFoMEpQUUpZSkdWMjBNTloyMGdhU3BGSzgyclZ1Z1RRQ3V5M1QveVNBQWF1Sm4rU0FSQWFtTVhRQVlnQ0UvVG4rMS80Z3BvaWFGNnFqTGx1UTVDdTFSVm5hRnVWWTRBZUpDdHF0S3pGNE43cW9yTlZwOHF4eFhRZ3d6ZEJTV3VnNUFMMDk4eFRnQVAwY29FVjNVT1NCd0ZVSmUyNmpMWG52b1JBQ3RaTERKVmV6VDRvSzJvTERhbWZnVEFFQlpMVGR0bURYWXByQ1dMTFdrQ3p3Q0dhS1ZRTXYrU2NwV0c1S2tBMXNYMEQ0VVR3SnFNbHAzQ0JvWUpPaXZIYUJ0YVFRQ01ZclQ0S3U3MGlRRXNVbHN3Umh2UUVLNkFSckY0RjVRcU55bzNRa2hNLzlnNEFhelBiaUdxN1cxb29Mazg3RGFkTFFUQSt0cmF3bXZPZ0VRTVJLSzhLa3gzbkMwRVFDWFdLMUx6WGcrWktTOEc2NzFtQ3dGUWxZTzZWTjc1NkpyK0FuRFFaYllRQUdOd1VKM0t6LzdvaUluMzNVRi9tVU1BaktmRlgra2hCcENCaWZmYVIxdFpSQUNNelUyeG1oZ05xTTNLKyt1bW9Td2lBT3B3VTdKamZSU0FHTERDME52cXBwV01JZ0JxOGxTNDQzNGlqQ1RReWR6NzZLbUpqQ0lBNm5OV3Z1YkdCNVpZZk8rY3RZOVJCRUFqN2Y2WkJ3MTFiSEdVUkdieC9mTFhOWFlSQUUyNXJPWWFmeVpJdzJTSncrNGI1TEpmN0NJQVd1QzFwdTFPR2NkTXZ5bGVPOFV1QXFBZHJmL0pUejNGWGUrUGh1b1pPajVZZnhjY040aHBCRUNiSEc5d2F2L3RhRDB6eUNJZkw3dmp2ckNPQUdpWjcxcHY4aFVDcWthU2NwNWVaOThkWVIwQjBMNElwOTJHWHlhamJVaHA0TzhsamRBSTFoRUFuUWhTK3MyL1UwemgyTXJNNjJzWXBBV3NJd0M2RXFvQld2bDJTWjJEckF2dVg2NVF4VzhhQWRDaExyNE5XSE1udFBzbHc1b0gzTGppdkRMUmF0NDZBcUJiTWZ1aGk2K2IxenoxVm92NUNzU3NkdE1JZ0J6Q05rWVhjM0E1RFRNeHd2L0hkWVd0Y09zSWdFeUNkMGpYVTNLMWR1ZW05ZlYzS25odG0wWUE1Tk5GbnlTRHJaSi9tRnBoYU9ndm9xU3RJd0N5NnFoaGt0bWVJUXpNRGYxRlZMSVBCSUFBOWsxRHhRa0RvME4vQ1FYc0JnRWdndzNVYVA3Q3dQclFYMFRkT2tNQWlPbXVsNUxIZHJJVkNUN0cvWEtVcTBzRWdEQzJWTFhwaVFSLzQzNEZxdFFyQWtBZWU2c3V4UG53YmFjb1R0OElBQlU2YmJORXAyRjgxR1FFQklBaXRCdzBvQTdqSUFCMDZicjNFdTJIdFZGKzBSQUFHdEdIeUl5U2k0a0FVQ3BEUXlaNkVsUmFiQVNBYWpRbnVrTjFnUURRTGsrWEpobzFFb29LaXdnQUc3SjFiS0pwL2FLS3NBSUJZRWJPN2swMHNDOFVENFlpQUl5aGt6RVdDZ1lqRUFEMlpHN3BSVFMyTFJRSnFpQUFyS0xETVJTRmdlb0lBTnRFdWozUjhQcFFDYWlCQVBCQXF2a1QvUytOdHg1TkVBQk9DQTZDUll5RG5IaTcwUW9Dd0JYeHVaQVlEVjNpL1VXN0NBQ0hOSXlKUlF5TDVuZzMwUjBDd0MwOWd5TXhPOGJIMjRjTUNBRG5WTTJSUlV5VHRmQm1JVE1DSUFTRmsyVko1QkhEK3dKWkJFQWdtc2ZORXQ5emg3Y0FxaEFBNFppWVFjdlpuVWU4MUZDT0FJakwzSGhhVHR1bzRzV0VSUVJBZEtZbjExcTZtR2k4VVBDSEFFQktUcWNiUm1EMEl4RUFXSUVrOEkyNWorVUlBQXhCRFBqRDZNZHFCQUJHSVFtc1krNWpCQUlBbFpBRXRqRDNVUVVCZ1BHUUJKb3g5ekVXQWdBMWtRUjZNUGRSRHdHQXBrZ0NLY3g5TkVRQW9EVWtRUjdNZmJTRkFFQW5DSU4yTWZUUkJRSUEzU0lKbW1EdW8xTUVBTElpRDBaajRpTW5BZ0JpQ0lORkRIMUlJUUNnUlp3OFlPSkRDUUlBZXZtSUJNWTkxQ0lBWUkvT1lHRFF3eHdDQU41MEZ3K01lRGhEQUFCQVVEM3BCUUFBWkJBQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUVJFQUFCQVVBUUFBUWYwZjNGY2JJcFU2ZWdjQUFBQUFTVVZPUks1Q1lJST0iLCAic2l6ZXMiOiAiNTEyeDUxMiIsICJ0eXBlIjogImltYWdlL3BuZyJ9XX0=">
+<link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<meta name="theme-color" content="#05060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Debt Tracker">
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
+<!-- ===== Loading Screen ===== -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-title">NIGHT CITY DATABASE</div>
+  <div class="loading-bar-track"><div class="loading-bar-fill"></div></div>
+  <div class="loading-sub">STUDENT RECORD SYSTEM // INITIALIZING</div>
+  <div class="loading-status">ONLINE</div>
+</div>
+
+<!-- ===== Background (original artwork, no copyrighted characters) ===== -->
+<div class="bg-scene" aria-hidden="true">
+  <div class="bg-moon"></div>
+  <div class="bg-stars"></div>
+  <div class="bg-skyline"><svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+  <g fill="#0a0e1f">
+    <rect x="0"   y="140" width="70"  height="160"/>
+    <rect x="80"  y="90"  width="50"  height="210"/>
+    <rect x="140" y="160" width="60"  height="140"/>
+    <rect x="210" y="60"  width="45"  height="240"/>
+    <rect x="265" y="120" width="80"  height="180"/>
+    <rect x="355" y="40"  width="55"  height="260"/>
+    <rect x="420" y="150" width="65"  height="150"/>
+    <rect x="495" y="80"  width="50"  height="220"/>
+    <rect x="555" y="170" width="90"  height="130"/>
+    <rect x="655" y="55"  width="48"  height="245"/>
+    <rect x="712" y="130" width="70"  height="170"/>
+    <rect x="790" y="95"  width="55"  height="205"/>
+    <rect x="855" y="165" width="60"  height="135"/>
+    <rect x="925" y="50"  width="50"  height="250"/>
+    <rect x="985" y="140" width="75"  height="160"/>
+    <rect x="1070" y="100" width="55" height="200"/>
+    <rect x="1135" y="160" width="65" height="140"/>
+  </g>
+  <g fill="#00f0ff" opacity="0.55">
+    <rect x="95"  y="105" width="6" height="6"/>
+    <rect x="95"  y="125" width="6" height="6"/>
+    <rect x="220" y="80"  width="6" height="6"/>
+    <rect x="235" y="110" width="6" height="6"/>
+    <rect x="370" y="60"  width="6" height="6"/>
+    <rect x="385" y="90"  width="6" height="6"/>
+    <rect x="510" y="100" width="6" height="6"/>
+    <rect x="665" y="75"  width="6" height="6"/>
+    <rect x="800" y="115" width="6" height="6"/>
+    <rect x="935" y="70"  width="6" height="6"/>
+    <rect x="1000" y="160" width="6" height="6"/>
+  </g>
+  <g fill="#ff2bd6" opacity="0.5">
+    <rect x="300" y="140" width="6" height="6"/>
+    <rect x="590" y="190" width="6" height="6"/>
+    <rect x="740" y="150" width="6" height="6"/>
+    <rect x="1090" y="120" width="6" height="6"/>
+  </g>
+</svg></div>
+  <div class="bg-haze"></div>
+</div>
+<div class="bg-scanlines" aria-hidden="true"></div>
+<div class="bg-overlay" aria-hidden="true"></div>
+
 <header class="top">
-  <h1>💸 Debt Tracker <span style="font-size:0.6em; opacity:0.85;">V2</span></h1>
+  <h1><span class="glitch" data-text="DEBT TRACKER">DEBT TRACKER</span><span class="ver">V2</span></h1>
   <div class="sub">Caticugan High School</div>
-  <span class="school-tag">GRADE 12 · APHRODITE · S.Y. 2026–2027</span>
+  <span class="school-tag">GRADE 12 &middot; APHRODITE &middot; S.Y. 2026&ndash;2027</span>
 </header>
 
 <div class="container">
@@ -500,46 +94,50 @@
 
   <!-- Quick actions -->
   <div class="actions-row">
-    <button class="btn btn-primary" id="btnAddViolation">➕ Add Violation</button>
-    <button class="btn btn-gold" id="btnAddPayment">💵 Add Payment</button>
+    <button class="btn btn-primary" id="btnAddViolation"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Violation</button>
+    <button class="btn btn-gold" id="btnAddPayment"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 10v.01M18 14v.01"/></svg> Add Payment</button>
   </div>
-  <button class="btn btn-outline btn-full" id="btnBatchAdd" style="margin-top:10px;">⚡ Quick Batch Add (multiple students at once)</button>
+  <button class="btn btn-outline btn-full" id="btnBatchAdd" style="margin-top:10px;"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 11 14 10 22 21 10 13 10 13 2"/></svg> Quick Batch Add (multiple students at once)</button>
 
-  <!-- Search & filters -->
-  <div class="section-title">🔎 Students</div>
-  <div class="toolbar">
-    <input type="text" id="searchInput" placeholder="Search student by name...">
-    <div class="chip-row" id="filterChips">
-      <div class="chip active" data-filter="all">All Students</div>
-      <div class="chip" data-filter="debt">With Debt</div>
-      <div class="chip" data-filter="paid">Fully Paid</div>
-      <div class="chip" data-filter="shoe">No Shoe Cover</div>
-      <div class="chip" data-filter="phone">Phone Charging</div>
+  <div id="studentsSection">
+    <!-- Search & filters -->
+    <div class="section-title"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Students</div>
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search student database...">
+      <div class="chip-row" id="filterChips">
+        <div class="chip active" data-filter="all">All Students</div>
+        <div class="chip" data-filter="debt">With Debt</div>
+        <div class="chip" data-filter="paid">Fully Paid</div>
+        <div class="chip" data-filter="shoe">No Shoe Cover</div>
+        <div class="chip" data-filter="phone">Phone Charging</div>
+      </div>
+      <div class="sort-row">
+        Sort by:
+        <select id="sortSelect">
+          <option value="name">Student Name (A-Z)</option>
+          <option value="debtHigh">Highest Debt</option>
+          <option value="debtLow">Lowest Debt</option>
+          <option value="violations">Most Violations</option>
+          <option value="latest">Latest Violation</option>
+        </select>
+      </div>
     </div>
-    <div class="sort-row">
-      Sort by:
-      <select id="sortSelect">
-        <option value="name">Student Name (A-Z)</option>
-        <option value="debtHigh">Highest Debt</option>
-        <option value="debtLow">Lowest Debt</option>
-        <option value="violations">Most Violations</option>
-        <option value="latest">Latest Violation</option>
-      </select>
+
+    <div class="student-list" id="studentList"></div>
+  </div>
+
+  <div id="dataSection">
+    <!-- Data tools -->
+    <div class="section-title"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg> Data Management</div>
+    <div class="data-tools">
+      <button class="btn btn-outline" id="btnAddStudent"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add Student</button>
+      <button class="btn btn-outline" id="btnExport"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export Backup</button>
+      <button class="btn btn-outline" id="btnImport"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Import Restore</button>
+      <button class="btn btn-gold" id="btnExportPDF" style="flex-basis:100%;"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg> Export PDF Report</button>
+      <button class="btn btn-danger" id="btnClearAll"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Clear All Data</button>
     </div>
+    <input type="file" id="importFile" accept="application/json" style="display:none;">
   </div>
-
-  <div class="student-list" id="studentList"></div>
-
-  <!-- Data tools -->
-  <div class="section-title">⚙️ Data Management</div>
-  <div class="data-tools">
-    <button class="btn btn-outline" id="btnAddStudent">👤 Add Student</button>
-    <button class="btn btn-outline" id="btnExport">⬇️ Export Backup</button>
-    <button class="btn btn-outline" id="btnImport">⬆️ Import Restore</button>
-    <button class="btn btn-gold" id="btnExportPDF" style="flex-basis:100%;">📄 Export PDF Report</button>
-    <button class="btn btn-danger" id="btnClearAll">🗑️ Clear All Data</button>
-  </div>
-  <input type="file" id="importFile" accept="application/json" style="display:none;">
 
   <footer>Grade 12 - Aphrodite Student Debt Tracker &middot; Data is saved automatically on this device.</footer>
 </div>
@@ -548,8 +146,8 @@
 <div class="modal-overlay" id="modalViolation">
   <div class="modal">
     <div class="modal-header">
-      <h2>➕ Add Violation</h2>
-      <button class="modal-close" data-close="modalViolation">✕</button>
+      <h2><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Violation</h2>
+      <button class="modal-close" data-close="modalViolation" aria-label="Close"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <form id="formViolation">
       <div class="form-group">
@@ -559,8 +157,8 @@
       <div class="form-group">
         <label>Violation Type</label>
         <select id="vType" required>
-          <option value="No Shoe Cover">No Shoe Cover — ₱1</option>
-          <option value="Phone Charging">Phone Charging — ₱5</option>
+          <option value="No Shoe Cover">No Shoe Cover &mdash; ₱1</option>
+          <option value="Phone Charging">Phone Charging &mdash; ₱5</option>
         </select>
       </div>
       <div class="form-group">
@@ -588,8 +186,8 @@
 <div class="modal-overlay" id="modalBatch">
   <div class="modal">
     <div class="modal-header">
-      <h2>⚡ Quick Batch Add</h2>
-      <button class="modal-close" data-close="modalBatch">✕</button>
+      <h2><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 11 14 10 22 21 10 13 10 13 2"/></svg> Quick Batch Add</h2>
+      <button class="modal-close" data-close="modalBatch" aria-label="Close"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <form id="formBatch">
       <div class="form-group">
@@ -607,14 +205,14 @@
         <div class="form-group" style="flex:1; margin-bottom:0;">
           <label>Violation Type</label>
           <select id="batchType" required>
-            <option value="No Shoe Cover">No Shoe Cover — ₱1</option>
-            <option value="Phone Charging">Phone Charging — ₱5</option>
+            <option value="No Shoe Cover">No Shoe Cover &mdash; ₱1</option>
+            <option value="Phone Charging">Phone Charging &mdash; ₱5</option>
           </select>
         </div>
       </div>
       <div class="form-group" style="margin-top:12px;">
-        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-          <input type="checkbox" id="batchMarkPaid" style="width:20px; height:20px; accent-color:var(--navy);">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; text-transform:none;">
+          <input type="checkbox" id="batchMarkPaid" style="width:20px; height:20px; accent-color:var(--cyan);">
           Mark all selected students as Paid (same date)
         </label>
       </div>
@@ -637,8 +235,8 @@
 <div class="modal-overlay" id="modalPayment">
   <div class="modal">
     <div class="modal-header">
-      <h2>💵 Add Payment</h2>
-      <button class="modal-close" data-close="modalPayment">✕</button>
+      <h2><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 10v.01M18 14v.01"/></svg> Add Payment</h2>
+      <button class="modal-close" data-close="modalPayment" aria-label="Close"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <form id="formPayment">
       <div class="form-group">
@@ -666,8 +264,8 @@
 <div class="modal-overlay" id="modalAddStudent">
   <div class="modal">
     <div class="modal-header">
-      <h2>👤 Add Student</h2>
-      <button class="modal-close" data-close="modalAddStudent">✕</button>
+      <h2><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add Student</h2>
+      <button class="modal-close" data-close="modalAddStudent" aria-label="Close"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <form id="formAddStudent">
       <div class="form-group">
@@ -690,18 +288,18 @@
 <div class="modal-overlay" id="modalExportPDF">
   <div class="modal">
     <div class="modal-header">
-      <h2>📄 Export PDF Report</h2>
-      <button class="modal-close" data-close="modalExportPDF">✕</button>
+      <h2><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg> Export PDF Report</h2>
+      <button class="modal-close" data-close="modalExportPDF" aria-label="Close"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <form id="formExportPDF">
       <div class="form-group">
         <label>Report Type</label>
         <select id="pdfReportType" required>
-          <option value="full">Full Report — all students, full history</option>
+          <option value="full">Full Report &mdash; all students, full history</option>
           <option value="unpaid">Unpaid Debts Only</option>
           <option value="paid">Fully Paid Students Only</option>
           <option value="individual">Individual Student Report</option>
-          <option value="summary">Summary Report — totals only</option>
+          <option value="summary">Summary Report &mdash; totals only</option>
         </select>
       </div>
       <div class="form-group" id="pdfStudentWrap" style="display:none;">
@@ -720,909 +318,40 @@
 <div class="modal-overlay" id="modalDetail">
   <div class="modal">
     <div class="modal-header">
-      <h2>Student Details</h2>
-      <button class="modal-close" data-close="modalDetail">✕</button>
+      <h2>Student Record</h2>
+      <button class="modal-close" data-close="modalDetail" aria-label="Close"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div id="detailBody"></div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>
-/* ============================================================
-   DATA LAYER
-=============================================================*/
-const STORAGE_KEY = 'g12AphroditeDebtTracker';
-const VIOLATION_TYPES = {
-  "No Shoe Cover": 1,
-  "Phone Charging": 5
-};
-
-const initialRoster = [
-  {name:"Alegre, Jeffrey G.", gender:"Male"},
-  {name:"Amaro, Jessboy L.", gender:"Male"},
-  {name:"Avenido, Marjun E.", gender:"Male"},
-  {name:"Butas, Renmark R.", gender:"Male"},
-  {name:"Cadavid, Noah B.", gender:"Male"},
-  {name:"Gutierrez, Mark Joshua S.", gender:"Male"},
-  {name:"Jorolan, John Ryven B.", gender:"Male"},
-  {name:"Kilakiga, Russel", gender:"Male"},
-  {name:"Quilinguen, John Paul E.", gender:"Male"},
-  {name:"Quinol, Ben Anthony", gender:"Male"},
-  {name:"Quinol, Serafin Jr. C.", gender:"Male"},
-  {name:"Santo, Richmon S.", gender:"Male"},
-  {name:"Sinda, Andrew John", gender:"Male"},
-  {name:"Alegre, John Ruel", gender:"Male"},
-  {name:"Corativo, Roi", gender:"Male"},
-  {name:"Abines, Aleah E.", gender:"Female"},
-  {name:"Abines, Ana E.", gender:"Female"},
-  {name:"Alberto, Alaiza E.", gender:"Female"},
-  {name:"Austero, Marian L.", gender:"Female"},
-  {name:"Austral, Lyn G.", gender:"Female"},
-  {name:"Beran, Sunny Bea A.", gender:"Female"},
-  {name:"Ciano, Mary Noren M.", gender:"Female"},
-  {name:"Domin, Michelle D.", gender:"Female"},
-  {name:"Enario, Anna C.", gender:"Female"},
-  {name:"Estolonio, Christine J.", gender:"Female"},
-  {name:"Kinkito, Jashley Laurine E.", gender:"Female"},
-  {name:"Kirit, Cathlene Mae L.", gender:"Female"},
-  {name:"Lobenia, CJ Saily Yrich V.", gender:"Female"},
-  {name:"Magbanua, Joann F.", gender:"Female"},
-  {name:"Quilinguen, Christine Mae N.", gender:"Female"},
-  {name:"Quio, Ashly D.", gender:"Female"},
-  {name:"Rusiana, Cheriell C.", gender:"Female"},
-  {name:"Salondaguit, Jessa Mae N.", gender:"Female"},
-  {name:"Tayko, Liza F.", gender:"Female"},
-  {name:"Sabanal, Angel", gender:"Female"},
-  {name:"Rapada, Jeliane", gender:"Female"}
-];
-
-let data = loadData();
-
-function loadData(){
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(raw){
-    try{
-      const parsed = JSON.parse(raw);
-      if(parsed && Array.isArray(parsed.students)) return parsed;
-    }catch(e){ console.error('Corrupt data, reinitializing.', e); }
-  }
-  const fresh = {
-    students: initialRoster.map((s,i)=>({id:'s'+(i+1), name:s.name, gender:s.gender})),
-    violations: [],
-    payments: []
-  };
-  saveData(fresh);
-  return fresh;
-}
-
-function saveData(d){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-}
-
-function persist(){
-  saveData(data);
-}
-
-function uid(prefix){
-  return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-}
-
-/* ============================================================
-   COMPUTED HELPERS
-=============================================================*/
-function money(n){
-  const v = Math.round(n*100)/100;
-  return '₱' + v.toLocaleString('en-PH', {minimumFractionDigits: (v%1!==0)?2:0, maximumFractionDigits:2});
-}
-
-function getStudentStats(studentId){
-  const vlist = data.violations.filter(v=>v.studentId===studentId);
-  const plist = data.payments.filter(p=>p.studentId===studentId);
-  const totalOwed = vlist.reduce((s,v)=>s+v.amount,0);
-  const totalPaid = plist.reduce((s,p)=>s+p.amount,0);
-  const remaining = Math.max(0, totalOwed - totalPaid);
-  const status = remaining === 0 ? 'PAID' : 'UNPAID';
-  let latestDate = null;
-  vlist.forEach(v=>{ if(!latestDate || v.date > latestDate) latestDate = v.date; });
-  return {
-    violations: vlist.sort((a,b)=> a.date < b.date ? 1 : -1),
-    payments: plist.sort((a,b)=> a.date < b.date ? 1 : -1),
-    totalOwed, totalPaid, remaining, status,
-    violationCount: vlist.length,
-    latestDate
-  };
-}
-
-/* ============================================================
-   RENDER: DASHBOARD
-=============================================================*/
-function renderDashboard(){
-  let totalOwed=0, totalPaid=0, totalRemaining=0, fullyPaid=0, totalViolations=data.violations.length;
-  data.students.forEach(s=>{
-    const stats = getStudentStats(s.id);
-    totalOwed += stats.totalOwed;
-    totalPaid += stats.totalPaid;
-    totalRemaining += stats.remaining;
-    if(stats.status==='PAID') fullyPaid++;
-  });
-
-  const dash = document.getElementById('dashboard');
-  dash.innerHTML = `
-    <div class="dash-card"><div class="num">${data.students.length}</div><div class="lbl">👥 Total Students</div></div>
-    <div class="dash-card"><div class="num">${totalViolations}</div><div class="lbl">⚠️ Total Violations</div></div>
-    <div class="dash-card owed"><div class="num">${money(totalOwed)}</div><div class="lbl">💰 Total Owed</div></div>
-    <div class="dash-card paid"><div class="num">${money(totalPaid)}</div><div class="lbl">💵 Total Paid</div></div>
-    <div class="dash-card owed"><div class="num">${money(totalRemaining)}</div><div class="lbl">🔴 Remaining Debt</div></div>
-    <div class="dash-card paid"><div class="num">${fullyPaid}</div><div class="lbl">🟢 Fully Paid</div></div>
-  `;
-}
-
-/* ============================================================
-   RENDER: STUDENT LIST
-=============================================================*/
-let currentFilter = 'all';
-let currentSort = 'name';
-let searchTerm = '';
-
-function getFilteredSortedStudents(){
-  let list = data.students.map(s=>({...s, stats: getStudentStats(s.id)}));
-
-  if(searchTerm.trim()){
-    const t = searchTerm.trim().toLowerCase();
-    list = list.filter(s=>s.name.toLowerCase().includes(t));
-  }
-
-  switch(currentFilter){
-    case 'debt':
-      list = list.filter(s=>s.stats.remaining > 0);
-      break;
-    case 'paid':
-      list = list.filter(s=>s.stats.remaining === 0);
-      break;
-    case 'shoe':
-      list = list.filter(s=>s.stats.violations.some(v=>v.type==='No Shoe Cover'));
-      break;
-    case 'phone':
-      list = list.filter(s=>s.stats.violations.some(v=>v.type==='Phone Charging'));
-      break;
-  }
-
-  switch(currentSort){
-    case 'name':
-      list.sort((a,b)=>a.name.localeCompare(b.name));
-      break;
-    case 'debtHigh':
-      list.sort((a,b)=>b.stats.remaining - a.stats.remaining);
-      break;
-    case 'debtLow':
-      list.sort((a,b)=>a.stats.remaining - b.stats.remaining);
-      break;
-    case 'violations':
-      list.sort((a,b)=>b.stats.violationCount - a.stats.violationCount);
-      break;
-    case 'latest':
-      list.sort((a,b)=>{
-        const da = a.stats.latestDate || '';
-        const db = b.stats.latestDate || '';
-        return db.localeCompare(da);
-      });
-      break;
-  }
-  return list;
-}
-
-function renderStudentList(){
-  const list = getFilteredSortedStudents();
-  const container = document.getElementById('studentList');
-
-  if(list.length === 0){
-    container.innerHTML = `<div class="empty-state">No students match your search/filter.</div>`;
-    return;
-  }
-
-  container.innerHTML = list.map(s=>{
-    const paidClass = s.stats.status === 'PAID' ? 'paid' : 'unpaid';
-    const amtClass = s.stats.remaining === 0 ? 'zero' : 'due';
-    return `
-      <div class="student-card ${paidClass}" data-id="${s.id}">
-        <div class="student-info">
-          <div class="student-name">${escapeHtml(s.name)}</div>
-          <div class="student-meta">${s.gender} &middot; ${s.stats.violationCount} violation${s.stats.violationCount===1?'':'s'}</div>
-        </div>
-        <div class="student-debt">
-          <div class="amt ${amtClass}">${money(s.stats.remaining)}</div>
-          <span class="status-badge ${paidClass}">${s.stats.status}</span>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  container.querySelectorAll('.student-card').forEach(card=>{
-    card.addEventListener('click', ()=> openDetail(card.dataset.id));
-  });
-}
-
-function escapeHtml(str){
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
-
-/* ============================================================
-   RENDER ALL
-=============================================================*/
-function renderAll(){
-  renderDashboard();
-  renderStudentList();
-  populateStudentSelects();
-}
-
-/* ============================================================
-   STUDENT SELECT DROPDOWNS
-=============================================================*/
-function populateStudentSelects(){
-  const sorted = [...data.students].sort((a,b)=>a.name.localeCompare(b.name));
-  const opts = sorted.map(s=>`<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
-  document.getElementById('vStudent').innerHTML = opts;
-  document.getElementById('pStudent').innerHTML = opts;
-}
-
-/* ============================================================
-   MODALS
-=============================================================*/
-function openModal(id){
-  document.getElementById(id).classList.add('open');
-}
-function closeModal(id){
-  document.getElementById(id).classList.remove('open');
-}
-document.querySelectorAll('.modal-close').forEach(btn=>{
-  btn.addEventListener('click', ()=> closeModal(btn.dataset.close));
-});
-document.querySelectorAll('.modal-overlay').forEach(ov=>{
-  ov.addEventListener('click', (e)=>{ if(e.target === ov) ov.classList.remove('open'); });
-});
-
-function todayStr(){
-  const d = new Date();
-  return d.toISOString().slice(0,10);
-}
-function currentPeriod(){
-  return new Date().getHours() < 12 ? 'AM' : 'PM';
-}
-
-/* --- Add Violation --- */
-document.getElementById('btnAddViolation').addEventListener('click', ()=>{
-  populateStudentSelects();
-  document.getElementById('vDate').value = todayStr();
-  document.getElementById('vPeriod').value = currentPeriod();
-  updateViolationAmountDisplay();
-  openModal('modalViolation');
-});
-document.getElementById('vType').addEventListener('change', updateViolationAmountDisplay);
-function updateViolationAmountDisplay(){
-  const type = document.getElementById('vType').value;
-  document.getElementById('vAmountDisplay').value = money(VIOLATION_TYPES[type]);
-}
-document.getElementById('formViolation').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const studentId = document.getElementById('vStudent').value;
-  const type = document.getElementById('vType').value;
-  const date = document.getElementById('vDate').value;
-  const period = document.getElementById('vPeriod').value;
-  if(!studentId || !date) return;
-  data.violations.push({
-    id: uid('v'),
-    studentId, date, type, period,
-    amount: VIOLATION_TYPES[type]
-  });
-  persist();
-  renderAll();
-  closeModal('modalViolation');
-  showToast('Violation recorded successfully.');
-});
-
-/* --- Add Payment --- */
-document.getElementById('btnAddPayment').addEventListener('click', ()=>{
-  populateStudentSelects();
-  document.getElementById('pDate').value = todayStr();
-  document.getElementById('pAmount').value = '';
-  updatePaymentRemainingDisplay();
-  openModal('modalPayment');
-});
-document.getElementById('pStudent').addEventListener('change', updatePaymentRemainingDisplay);
-function updatePaymentRemainingDisplay(){
-  const sid = document.getElementById('pStudent').value;
-  if(!sid) return;
-  const stats = getStudentStats(sid);
-  document.getElementById('pRemainingDisplay').value = money(stats.remaining);
-  document.getElementById('pAmount').max = stats.remaining > 0 ? stats.remaining : '';
-}
-document.getElementById('formPayment').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const studentId = document.getElementById('pStudent').value;
-  let amount = parseFloat(document.getElementById('pAmount').value);
-  const date = document.getElementById('pDate').value;
-  if(!studentId || !date || isNaN(amount) || amount <= 0) return;
-
-  const stats = getStudentStats(studentId);
-  // Prevent overpayment beyond remaining debt causing negative remaining;
-  // cap the recorded payment at the remaining debt if it exceeds it.
-  if(amount > stats.remaining){
-    amount = stats.remaining;
-  }
-  if(amount <= 0){
-    showToast('This student has no remaining debt.');
-    return;
-  }
-
-  data.payments.push({
-    id: uid('p'),
-    studentId, date, amount
-  });
-  persist();
-  renderAll();
-  closeModal('modalPayment');
-  showToast('Payment recorded successfully.');
-});
-
-/* --- Quick Batch Add --- */
-let batchSelectedIds = new Set();
-
-document.getElementById('btnBatchAdd').addEventListener('click', ()=>{
-  document.getElementById('batchDate').value = todayStr();
-  document.getElementById('batchPeriod').value = currentPeriod();
-  document.getElementById('batchType').value = 'No Shoe Cover';
-  document.getElementById('batchMarkPaid').checked = false;
-  document.getElementById('batchSearch').value = '';
-  batchSelectedIds = new Set();
-  renderBatchList('');
-  openModal('modalBatch');
-});
-
-function renderBatchList(filterText){
-  const sorted = [...data.students].sort((a,b)=>a.name.localeCompare(b.name));
-  const t = (filterText||'').trim().toLowerCase();
-  const list = t ? sorted.filter(s=>s.name.toLowerCase().includes(t)) : sorted;
-  const container = document.getElementById('batchList');
-
-  if(list.length === 0){
-    container.innerHTML = `<div class="empty-state" style="padding:20px;">No students match.</div>`;
-  } else {
-    container.innerHTML = list.map(s=>{
-      const checked = batchSelectedIds.has(s.id);
-      return `
-        <div class="batch-item ${checked?'checked':''}" data-id="${s.id}">
-          <input type="checkbox" ${checked?'checked':''} data-id="${s.id}">
-          <span class="bname">${escapeHtml(s.name)}</span>
-        </div>`;
-    }).join('');
-  }
-
-  container.querySelectorAll('.batch-item').forEach(item=>{
-    item.addEventListener('click', (e)=>{
-      const id = item.dataset.id;
-      if(batchSelectedIds.has(id)) batchSelectedIds.delete(id);
-      else batchSelectedIds.add(id);
-      const cb = item.querySelector('input[type="checkbox"]');
-      cb.checked = batchSelectedIds.has(id);
-      item.classList.toggle('checked', batchSelectedIds.has(id));
-      updateBatchCount();
-    });
-  });
-  updateBatchCount();
-}
-
-function updateBatchCount(){
-  document.getElementById('batchCount').textContent = batchSelectedIds.size + ' student' + (batchSelectedIds.size===1?'':'s') + ' selected';
-}
-
-document.getElementById('batchSearch').addEventListener('input', (e)=>{
-  renderBatchList(e.target.value);
-});
-
-document.getElementById('batchSelectAll').addEventListener('click', ()=>{
-  const t = document.getElementById('batchSearch').value.trim().toLowerCase();
-  const visible = t ? data.students.filter(s=>s.name.toLowerCase().includes(t)) : data.students;
-  visible.forEach(s=>batchSelectedIds.add(s.id));
-  renderBatchList(document.getElementById('batchSearch').value);
-});
-document.getElementById('batchClearAll').addEventListener('click', ()=>{
-  const t = document.getElementById('batchSearch').value.trim().toLowerCase();
-  const visible = t ? data.students.filter(s=>s.name.toLowerCase().includes(t)) : data.students;
-  visible.forEach(s=>batchSelectedIds.delete(s.id));
-  renderBatchList(document.getElementById('batchSearch').value);
-});
-
-document.getElementById('formBatch').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  if(batchSelectedIds.size === 0){
-    showToast('Select at least one student first.');
-    return;
-  }
-  const date = document.getElementById('batchDate').value;
-  const period = document.getElementById('batchPeriod').value;
-  const type = document.getElementById('batchType').value;
-  const markPaid = document.getElementById('batchMarkPaid').checked;
-  const amount = VIOLATION_TYPES[type];
-  if(!date) return;
-
-  batchSelectedIds.forEach(sid=>{
-    data.violations.push({
-      id: uid('v'),
-      studentId: sid, date, type, period,
-      amount
-    });
-    if(markPaid){
-      data.payments.push({
-        id: uid('p'),
-        studentId: sid, date, amount
-      });
-    }
-  });
-
-  const count = batchSelectedIds.size;
-  persist();
-  renderAll();
-  closeModal('modalBatch');
-  showToast(`Added ${type} for ${count} student${count===1?'':'s'}${markPaid?' (marked paid)':''}.`);
-});
-
-/* --- Add Student --- */
-document.getElementById('btnAddStudent').addEventListener('click', ()=>{
-  document.getElementById('sName').value = '';
-  openModal('modalAddStudent');
-});
-document.getElementById('formAddStudent').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const name = document.getElementById('sName').value.trim();
-  const gender = document.getElementById('sGender').value;
-  if(!name) return;
-  data.students.push({ id: uid('s'), name, gender });
-  persist();
-  renderAll();
-  closeModal('modalAddStudent');
-  showToast('Student added.');
-});
-
-/* ============================================================
-   STUDENT DETAIL MODAL
-=============================================================*/
-let currentDetailId = null;
-
-function openDetail(studentId){
-  currentDetailId = studentId;
-  renderDetail();
-  openModal('modalDetail');
-}
-
-function renderDetail(){
-  const s = data.students.find(x=>x.id===currentDetailId);
-  if(!s) return;
-  const stats = getStudentStats(s.id);
-  const remClass = stats.remaining === 0 ? 'zero' : 'due';
-
-  let violationsHtml = stats.violations.length
-    ? stats.violations.map(v=>`
-        <div class="history-row">
-          <div>
-            <div class="htype">${escapeHtml(v.type)}</div>
-            <div class="hdate">${formatDate(v.date)}${v.period ? ' ('+v.period+')' : ''}</div>
-          </div>
-          <div class="hamt violation">+${money(v.amount)}</div>
-        </div>`).join('')
-    : `<div class="empty-state" style="padding:16px;">No violations recorded.</div>`;
-
-  let paymentsHtml = stats.payments.length
-    ? stats.payments.map(p=>`
-        <div class="history-row">
-          <div>
-            <div class="htype">Payment</div>
-            <div class="hdate">${formatDate(p.date)}</div>
-          </div>
-          <div class="hamt payment">-${money(p.amount)}</div>
-        </div>`).join('')
-    : `<div class="empty-state" style="padding:16px;">No payments recorded.</div>`;
-
-  document.getElementById('detailBody').innerHTML = `
-    <div class="detail-header">
-      <div class="name">${escapeHtml(s.name)}</div>
-      <div class="gender">${s.gender}</div>
+<!-- ===== Music Player ===== -->
+<div class="music-player" id="musicPlayer">
+  <audio id="bgAudio" preload="none" src="assets/music/i-really-want-to-stay-at-your-house.mp3"></audio>
+  <div class="music-title-row" id="musicTitleRow">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    <span class="mt">I Really Want to Stay at Your House</span>
+  </div>
+  <div class="music-body">
+    <div class="music-controls">
+      <button class="ico-btn" id="musicToggle" aria-label="Play or pause music"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
+      <input type="range" class="music-vol" id="musicVol" min="0" max="1" step="0.05" value="0.6" aria-label="Volume">
+      <button class="ico-btn" id="musicMute" aria-label="Mute or unmute"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+      <button class="ico-btn" id="musicRepeat" aria-label="Toggle repeat"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
     </div>
+    <div class="music-status" id="musicStatus">Tap play to start &mdash; add your file to /assets/music/</div>
+  </div>
+</div>
 
-    <div class="big-remaining ${remClass}">
-      <div class="amt">${stats.remaining === 0 ? 'PAID — ₱0 remaining' : money(stats.remaining) + ' remaining'}</div>
-      <div class="lbl">${stats.status === 'PAID' ? '🟢 Fully Paid' : '🔴 Unpaid Balance'}</div>
-    </div>
+<!-- ===== Navigation ===== -->
+<nav class="app-nav" aria-label="Main navigation">
+  <button class="nav-btn" id="navHome" aria-label="Dashboard"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>HOME</span></button>
+  <button class="nav-btn" id="navStudents" aria-label="Students"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>STUDENTS</span></button>
+  <button class="nav-btn" id="navData" aria-label="Data management"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg><span>DATA</span></button>
+</nav>
 
-    <div class="detail-stats">
-      <div class="detail-stat"><div class="v">${money(stats.totalOwed)}</div><div class="l">Original Debt</div></div>
-      <div class="detail-stat"><div class="v">${money(stats.totalPaid)}</div><div class="l">Total Paid</div></div>
-      <div class="detail-stat"><div class="v">${stats.violationCount}</div><div class="l">Violations</div></div>
-    </div>
-
-    <div class="actions-row">
-      <button class="btn btn-primary btn-sm" id="detailAddViolation">➕ Add Violation</button>
-      <button class="btn btn-gold btn-sm" id="detailAddPayment" ${stats.remaining===0?'disabled':''}>💵 Add Payment</button>
-    </div>
-
-    <div class="history-block">
-      <h3>📋 Violation History</h3>
-      ${violationsHtml}
-    </div>
-    <div class="history-block">
-      <h3>🧾 Payment History</h3>
-      ${paymentsHtml}
-    </div>
-  `;
-
-  document.getElementById('detailAddViolation').addEventListener('click', ()=>{
-    closeModal('modalDetail');
-    populateStudentSelects();
-    document.getElementById('vStudent').value = s.id;
-    document.getElementById('vDate').value = todayStr();
-    document.getElementById('vPeriod').value = currentPeriod();
-    updateViolationAmountDisplay();
-    openModal('modalViolation');
-  });
-  document.getElementById('detailAddPayment').addEventListener('click', ()=>{
-    if(stats.remaining===0) return;
-    closeModal('modalDetail');
-    populateStudentSelects();
-    document.getElementById('pStudent').value = s.id;
-    document.getElementById('pDate').value = todayStr();
-    updatePaymentRemainingDisplay();
-    openModal('modalPayment');
-  });
-}
-
-function formatDate(dstr){
-  if(!dstr) return '';
-  const d = new Date(dstr + 'T00:00:00');
-  if(isNaN(d)) return dstr;
-  return d.toLocaleDateString('en-PH', {year:'numeric', month:'short', day:'numeric'});
-}
-
-/* ============================================================
-   SEARCH / FILTER / SORT EVENTS
-=============================================================*/
-document.getElementById('searchInput').addEventListener('input', (e)=>{
-  searchTerm = e.target.value;
-  renderStudentList();
-});
-document.querySelectorAll('#filterChips .chip').forEach(chip=>{
-  chip.addEventListener('click', ()=>{
-    document.querySelectorAll('#filterChips .chip').forEach(c=>c.classList.remove('active'));
-    chip.classList.add('active');
-    currentFilter = chip.dataset.filter;
-    renderStudentList();
-  });
-});
-document.getElementById('sortSelect').addEventListener('change', (e)=>{
-  currentSort = e.target.value;
-  renderStudentList();
-});
-
-/* ============================================================
-   DATA TOOLS: EXPORT / IMPORT / CLEAR
-=============================================================*/
-document.getElementById('btnExport').addEventListener('click', ()=>{
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const stamp = new Date().toISOString().slice(0,10);
-  a.href = url;
-  a.download = `G12-Aphrodite-DebtTracker-Backup-${stamp}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('Backup exported.');
-});
-
-document.getElementById('btnImport').addEventListener('click', ()=>{
-  document.getElementById('importFile').click();
-});
-document.getElementById('importFile').addEventListener('change', (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev)=>{
-    try{
-      const imported = JSON.parse(ev.target.result);
-      if(!imported || !Array.isArray(imported.students) || !Array.isArray(imported.violations) || !Array.isArray(imported.payments)){
-        throw new Error('Invalid file format.');
-      }
-      if(confirm('Import this backup? This will REPLACE all current data on this device.')){
-        data = imported;
-        persist();
-        renderAll();
-        showToast('Data restored from backup.');
-      }
-    }catch(err){
-      alert('Could not import file: ' + err.message);
-    }
-    e.target.value = '';
-  };
-  reader.readAsText(file);
-});
-
-document.getElementById('btnClearAll').addEventListener('click', ()=>{
-  if(confirm('⚠️ This will permanently delete ALL students, violations, and payments from this device. This cannot be undone.\n\nType-check: are you sure you want to continue?')){
-    if(confirm('Final confirmation: Clear ALL data now?')){
-      data = {
-        students: initialRoster.map((s,i)=>({id:'s'+(i+1), name:s.name, gender:s.gender})),
-        violations: [],
-        payments: []
-      };
-      persist();
-      renderAll();
-      showToast('All data cleared. Roster reset to original 36 students.');
-    }
-  }
-});
-
-/* ============================================================
-   TOAST
-=============================================================*/
-let toastTimer = null;
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
-}
-
-/* ============================================================
-   PDF EXPORT
-=============================================================*/
-// Note: the peso sign (₱) is not reliably supported by jsPDF's built-in
-// fonts, so PDF text uses "Php" instead to guarantee it renders correctly
-// in every viewer. The on-screen app keeps using ₱ as normal.
-function phpPdf(n){
-  const v = Math.round(n*100)/100;
-  return 'Php ' + v.toLocaleString('en-PH', {minimumFractionDigits:(v%1!==0)?2:0, maximumFractionDigits:2});
-}
-
-document.getElementById('btnExportPDF').addEventListener('click', ()=>{
-  const sel = document.getElementById('pdfReportType');
-  sel.value = 'full';
-  document.getElementById('pdfStudentWrap').style.display = 'none';
-  populatePdfStudentSelect();
-  openModal('modalExportPDF');
-});
-
-document.getElementById('pdfReportType').addEventListener('change', (e)=>{
-  document.getElementById('pdfStudentWrap').style.display = (e.target.value==='individual') ? 'block' : 'none';
-});
-
-function populatePdfStudentSelect(){
-  const sorted = [...data.students].sort((a,b)=>a.name.localeCompare(b.name));
-  document.getElementById('pdfStudent').innerHTML =
-    sorted.map(s=>`<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
-}
-
-document.getElementById('formExportPDF').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const type = document.getElementById('pdfReportType').value;
-  const studentId = document.getElementById('pdfStudent').value;
-  try{
-    generatePDF(type, studentId);
-    closeModal('modalExportPDF');
-    showToast('PDF generated.');
-  }catch(err){
-    console.error(err);
-    alert('Could not generate PDF: ' + err.message);
-  }
-});
-
-function violationCounts(stats){
-  const shoe = stats.violations.filter(v=>v.type==='No Shoe Cover').length;
-  const phone = stats.violations.filter(v=>v.type==='Phone Charging').length;
-  return {shoe, phone};
-}
-
-function pdfHeader(doc, subtitle){
-  const pageW = doc.internal.pageSize.getWidth();
-  let y = 15;
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(14);
-  doc.text('Caticugan High School', pageW/2, y, {align:'center'}); y+=6;
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(10);
-  doc.text('Caticugan, Siaton, Negros Oriental', pageW/2, y, {align:'center'}); y+=6;
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(11);
-  doc.text('Grade 12 - Aphrodite  |  S.Y. 2026-2027', pageW/2, y, {align:'center'}); y+=7;
-  doc.setFontSize(13);
-  doc.text('Student Debt / Penalty Record', pageW/2, y, {align:'center'}); y+=6;
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(10);
-  doc.text(subtitle, pageW/2, y, {align:'center'}); y+=5;
-  doc.setFontSize(8.5);
-  doc.setTextColor(110,110,110);
-  const genDate = new Date().toLocaleString('en-PH', {year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  doc.text('Generated: ' + genDate, pageW/2, y, {align:'center'});
-  doc.setTextColor(0,0,0);
-  y += 6;
-  doc.setDrawColor(200,200,200);
-  doc.line(12, y, pageW-12, y);
-  return y + 6;
-}
-
-function pdfStudentBlock(doc, student, stats, startY){
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-  let y = startY;
-  if(y > pageH - 40){ doc.addPage(); y = 15; }
-
-  const counts = violationCounts(stats);
-
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(11);
-  doc.text(student.name + '  (' + student.gender + ')', 12, y);
-  y += 5;
-
-  doc.autoTable({
-    startY: y,
-    head: [['No Shoe Cover', 'Phone Charging', 'Total Charges', 'Total Paid', 'Remaining', 'Status']],
-    body: [[
-      counts.shoe, counts.phone, phpPdf(stats.totalOwed), phpPdf(stats.totalPaid),
-      phpPdf(stats.remaining), stats.status
-    ]],
-    theme: 'grid',
-    styles:{fontSize:8.5, halign:'center'},
-    headStyles:{fillColor:[30,58,95], textColor:255, fontSize:8},
-    margin:{left:12,right:12}
-  });
-  y = doc.lastAutoTable.finalY + 3;
-
-  // Build combined, date-sorted history
-  const rows = [];
-  stats.violations.forEach(v=>rows.push({date:v.date, period:v.period, label:v.type, amt:v.amount, sign:1}));
-  stats.payments.forEach(p=>rows.push({date:p.date, period:null, label:'Payment', amt:p.amount, sign:-1}));
-  rows.sort((a,b)=> a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
-
-  const body = rows.map(r=>[
-    formatDate(r.date) + (r.period ? ' ('+r.period+')' : ''), r.label, (r.sign>0?'':'-') + phpPdf(r.amt)
-  ]);
-  body.push(['', 'Remaining Debt', phpPdf(stats.remaining)]);
-
-  doc.autoTable({
-    startY: y,
-    head: [['Date','Record','Amount']],
-    body: body,
-    theme:'striped',
-    styles:{fontSize:8.5},
-    headStyles:{fillColor:[242,183,5], textColor:[19,40,64], fontSize:8},
-    columnStyles:{2:{halign:'right'}},
-    didParseCell: function(d){
-      if(d.row.index === body.length-1 && d.section==='body'){
-        d.cell.styles.fontStyle = 'bold';
-        d.cell.styles.fillColor = stats.remaining>0 ? [253,236,235] : [232,247,238];
-      }
-    },
-    margin:{left:12,right:12}
-  });
-
-  return doc.lastAutoTable.finalY + 10;
-}
-
-function addPageNumbers(doc){
-  const pageCount = doc.internal.getNumberOfPages();
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-  for(let i=1;i<=pageCount;i++){
-    doc.setPage(i);
-    doc.setFontSize(8);
-    doc.setTextColor(130,130,130);
-    doc.text('Page ' + i + ' of ' + pageCount, pageW/2, pageH-8, {align:'center'});
-    doc.setTextColor(0,0,0);
-  }
-}
-
-function generatePDF(type, studentId){
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:'mm', format:'a4'});
-
-  let studentsList = data.students.map(s=>({...s, stats:getStudentStats(s.id)}));
-  let subtitle = 'Full Report';
-  let filename = 'Full-Report';
-
-  if(type==='unpaid'){
-    studentsList = studentsList.filter(s=>s.stats.remaining>0);
-    subtitle = 'Unpaid Debts Only';
-    filename = 'Unpaid-Debts';
-  } else if(type==='paid'){
-    studentsList = studentsList.filter(s=>s.stats.remaining===0 && s.stats.totalOwed>0);
-    subtitle = 'Fully Paid Students Only';
-    filename = 'Fully-Paid';
-  } else if(type==='individual'){
-    studentsList = studentsList.filter(s=>s.id===studentId);
-    const nm = studentsList[0] ? studentsList[0].name : 'Student';
-    subtitle = 'Individual Student Report: ' + nm;
-    filename = 'Individual-' + nm.replace(/[^a-z0-9]+/gi,'-');
-  } else if(type==='summary'){
-    subtitle = 'Summary Report';
-    filename = 'Summary-Report';
-  }
-
-  studentsList.sort((a,b)=>a.name.localeCompare(b.name));
-
-  let y = pdfHeader(doc, subtitle);
-
-  if(type==='summary'){
-    let totalOwed=0, totalPaid=0, totalRemaining=0, fullyPaid=0, totalViol=0;
-    const body = studentsList.map(s=>{
-      const c = violationCounts(s.stats);
-      totalOwed += s.stats.totalOwed;
-      totalPaid += s.stats.totalPaid;
-      totalRemaining += s.stats.remaining;
-      totalViol += s.stats.violationCount;
-      if(s.stats.status==='PAID') fullyPaid++;
-      return [s.name, c.shoe, c.phone, phpPdf(s.stats.totalOwed), phpPdf(s.stats.totalPaid), phpPdf(s.stats.remaining), s.stats.status];
-    });
-    doc.autoTable({
-      startY:y,
-      head:[['Student Name','No Shoe Cover','Phone Charging','Total Charged','Total Paid','Remaining','Status']],
-      body: body,
-      theme:'grid',
-      styles:{fontSize:8},
-      headStyles:{fillColor:[30,58,95], textColor:255, fontSize:7.5},
-      columnStyles:{0:{fontStyle:'bold'}},
-      margin:{left:12,right:12},
-      didParseCell:function(d){
-        if(d.section==='body' && d.column.index===6){
-          d.cell.styles.textColor = d.cell.raw==='PAID' ? [47,143,91] : [209,69,59];
-          d.cell.styles.fontStyle = 'bold';
-        }
-      }
-    });
-    y = doc.lastAutoTable.finalY + 8;
-    const pageW = doc.internal.pageSize.getWidth();
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(10);
-    doc.text('Overall Totals', 12, y); y+=5;
-    doc.autoTable({
-      startY:y,
-      head:[['Total Students','Total Violations','Total Owed','Total Paid','Remaining Debt','Fully Paid']],
-      body:[[studentsList.length, totalViol, phpPdf(totalOwed), phpPdf(totalPaid), phpPdf(totalRemaining), fullyPaid]],
-      theme:'grid',
-      styles:{fontSize:9, halign:'center'},
-      headStyles:{fillColor:[242,183,5], textColor:[19,40,64]},
-      margin:{left:12,right:12}
-    });
-  } else {
-    if(studentsList.length===0){
-      doc.setFontSize(11);
-      doc.text('No students match this report type.', 12, y);
-    }
-    studentsList.forEach(s=>{
-      y = pdfStudentBlock(doc, s, s.stats, y);
-    });
-  }
-
-  addPageNumbers(doc);
-
-  const stamp = new Date().toISOString().slice(0,10);
-  doc.save(`G12-Aphrodite-${filename}-${stamp}.pdf`);
-}
-
-/* ============================================================
-   INIT
-=============================================================*/
-renderAll();
-
-// Enable installable/offline app behavior only when actually hosted
-// (http/https). Safe no-op when opened as a local file.
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
-  });
-}
-</script>
+<script src="script.js"></script>
 </body>
 </html>
